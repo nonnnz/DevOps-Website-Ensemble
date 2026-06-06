@@ -74,7 +74,7 @@
 </script>
 
 <svelte:head>
-  <title>Admin Config — Thai LLM</title>
+  <title>Admin Config - Super AI Engineer LLM</title>
 </svelte:head>
 
 <section class="section pt-12">

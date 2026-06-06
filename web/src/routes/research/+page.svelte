@@ -12,14 +12,14 @@
 </script>
 
 <svelte:head>
-  <title>Research — Thai LLM</title>
+  <title>Research - Super AI Engineer LLM</title>
 </svelte:head>
 
 <section class="section pt-12">
   <div class="container-app">
     <SectionHeader
       eyebrow="Research"
-      title="How the Thai LLM is built"
+      title="How Super AI Engineer LLM is built"
       subtitle="We share our methods openly — from tokenizer design to serving infrastructure."
     />
 

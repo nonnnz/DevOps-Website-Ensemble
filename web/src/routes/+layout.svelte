@@ -4,9 +4,9 @@
   import Footer from '$lib/components/Footer.svelte';
 </script>
 
-<div class="gradient-page flex min-h-screen flex-col">
+<div class="gradient-page flex min-h-screen w-full overflow-x-hidden flex-col">
   <Navbar />
-  <main class="flex-1">
+  <main class="w-full min-w-0 flex-1 pt-24">
     <slot />
   </main>
   <Footer />

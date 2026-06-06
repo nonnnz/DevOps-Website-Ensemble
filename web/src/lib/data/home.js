@@ -20,8 +20,8 @@ export const modelHighlights = [
     icon: 'bolt'
   },
   {
-    title: 'OpenAI-compatible API',
-    description: 'Drop-in /v1/chat/completions interface — use the OpenAI SDK you already know.',
+    title: 'Integration-ready API',
+    description: 'A familiar chat-completions interface for engineering teams and product demos.',
     icon: 'plug'
   }
 ];

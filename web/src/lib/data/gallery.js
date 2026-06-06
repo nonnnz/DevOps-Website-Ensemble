@@ -44,3 +44,42 @@ export const useCases = [
     prompt: 'ช่วยอธิบายขั้นตอนการขอหนังสือรับรองถิ่นที่อยู่แบบเข้าใจง่าย'
   }
 ];
+
+export const galleryImages = [
+  {
+    title: 'Research Workshop',
+    description: 'Atmosphere photos from model research and engineering sessions.',
+    src: '',
+    alt: 'Research workshop atmosphere'
+  },
+  {
+    title: 'Engineering Lab',
+    description: 'Room for lab, compute, and system integration photos.',
+    src: '',
+    alt: 'Engineering lab atmosphere'
+  },
+  {
+    title: 'Evaluation Session',
+    description: 'Benchmarks, testing days, and review sessions.',
+    src: '',
+    alt: 'Evaluation session atmosphere'
+  },
+  {
+    title: 'Community Meetup',
+    description: 'Events, talks, and community learning moments.',
+    src: '',
+    alt: 'Community meetup atmosphere'
+  },
+  {
+    title: 'Demo Booth',
+    description: 'Showcase space for demos and live product trials.',
+    src: '',
+    alt: 'Demo booth atmosphere'
+  },
+  {
+    title: 'Team Collaboration',
+    description: 'Behind-the-scenes collaboration and build progress.',
+    src: '',
+    alt: 'Team collaboration atmosphere'
+  }
+];

@@ -18,7 +18,7 @@
 </script>
 
 <svelte:head>
-  <title>Community — Thai LLM</title>
+  <title>Community - Super AI Engineer LLM</title>
 </svelte:head>
 
 <section class="section pt-12">
@@ -26,7 +26,7 @@
     <SectionHeader
       eyebrow="Community"
       title="Get involved"
-      subtitle="Thai LLM is built in the open. Join us and help shape a Thai-first AI future."
+      subtitle="Super AI Engineer LLM is built in the open. Join us and help shape a Thai-first AI future."
       center
     />
 

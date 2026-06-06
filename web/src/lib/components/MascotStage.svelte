@@ -29,6 +29,7 @@
   export let autoRotate = true;
   export let interactive = true;
   export let pills = heroPills;
+  export let framed = true;
 
   let WebGLComponent = null;
   let webglFailed = false;
@@ -76,16 +77,21 @@
   function handleSplineFail() {
     splineFailed = true;
   }
+
+  $: stageClasses = [
+    'relative flex aspect-square w-full items-center justify-center overflow-hidden sm:aspect-[4/3] lg:aspect-square',
+    framed ? 'gradient-stage glow-primary rounded-3xl border border-bordersoft p-6' : 'p-0'
+  ].join(' ');
 </script>
 
 <div class="relative">
   <!-- Floating stage card -->
-  <div
-    class="gradient-stage glow-primary relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-3xl border border-bordersoft p-6 sm:aspect-[4/3] lg:aspect-square"
-  >
+  <div class={stageClasses}>
     <!-- soft radial accents -->
-    <div class="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-primary/20 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-10 -right-10 h-44 w-44 rounded-full bg-primary/15 blur-3xl"></div>
+    {#if framed}
+      <div class="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-primary/20 blur-3xl"></div>
+      <div class="pointer-events-none absolute -bottom-10 -right-10 h-44 w-44 rounded-full bg-primary/15 blur-3xl"></div>
+    {/if}
 
     {#if resolvedMode === 'spline' && SplineComponent}
       <div class="absolute inset-0">
@@ -106,11 +112,11 @@
         <span class="text-sm font-medium">Loading 3D mascot…</span>
       </div>
     {:else if resolvedMode === 'image'}
-      <img src={src} alt="Thai LLM mascot" class="max-h-full max-w-full animate-float object-contain" />
+      <img src={src} alt="Super AI Engineer LLM mascot" class="max-h-full max-w-full animate-float object-contain" />
     {:else}
       <!-- Placeholder mascot (pure SVG/CSS, primary color #247FFF) -->
       <div class="animate-float">
-        <svg viewBox="0 0 220 240" class="h-56 w-56 drop-shadow-xl sm:h-64 sm:w-64" role="img" aria-label="Thai LLM mascot placeholder">
+        <svg viewBox="0 0 220 240" class="h-56 w-56 drop-shadow-xl sm:h-64 sm:w-64" role="img" aria-label="Super AI Engineer LLM mascot placeholder">
           <defs>
             <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stop-color="#4A95FF" />

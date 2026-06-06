@@ -66,15 +66,15 @@ python -m vllm.entrypoints.openai.api_server \\
 </script>
 
 <svelte:head>
-  <title>Docs — Thai LLM</title>
+  <title>Doc - Super AI Engineer LLM</title>
 </svelte:head>
 
 <section class="section pt-12">
   <div class="container-app">
     <SectionHeader
       eyebrow="Documentation"
-      title="API documentation"
-      subtitle="An OpenAI-compatible API — use the OpenAI SDK or plain HTTP."
+      title="Super AI Engineer LLM documentation"
+      subtitle="Reference material for model usage, integration, deployment, and limitations."
     />
 
     {#if !docsEnabled}
@@ -96,7 +96,7 @@ python -m vllm.entrypoints.openai.api_server \\
         <div class="max-w-3xl space-y-10">
           <div id="quickstart" class="card-soft p-6 scroll-mt-24">
             <h2 class="text-xl font-bold text-textmain">Quickstart</h2>
-            <p class="mt-2 text-textmuted">Install the OpenAI SDK and point it at the Thai LLM endpoint.</p>
+            <p class="mt-2 text-textmuted">Install the OpenAI SDK and point it at the Super AI Engineer LLM endpoint.</p>
             <pre class="code-block"><code>pip install openai</code></pre>
             <pre class="code-block"><code>{pythonExample}</code></pre>
           </div>

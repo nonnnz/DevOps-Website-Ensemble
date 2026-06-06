@@ -5,7 +5,7 @@
 export const fallbackModels = [
   {
     model_id: 'thai-llm-base-v0.1',
-    display_name: 'Thai LLM Base v0.1',
+    display_name: 'Super AI Engineer LLM Base v0.1',
     model_type: 'base',
     parameters: '8B',
     context_length: 8192,
@@ -19,7 +19,7 @@ export const fallbackModels = [
   },
   {
     model_id: 'thai-llm-instruct-v0.1',
-    display_name: 'Thai LLM Instruct v0.1',
+    display_name: 'Super AI Engineer LLM Instruct v0.1',
     model_type: 'instruct',
     parameters: '8B',
     context_length: 8192,
@@ -33,7 +33,7 @@ export const fallbackModels = [
   },
   {
     model_id: 'thai-llm-chat-v0.1',
-    display_name: 'Thai LLM Chat v0.1',
+    display_name: 'Super AI Engineer LLM Chat v0.1',
     model_type: 'chat',
     parameters: '8B',
     context_length: 16384,

@@ -171,7 +171,7 @@
       {#if messages.length === 0}
         <div class="flex h-full min-h-[40vh] flex-col items-center justify-center text-center text-textmuted">
           <span class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-soft text-2xl">💬</span>
-          <p class="font-medium text-textmain">Start chatting with the Thai LLM</p>
+          <p class="font-medium text-textmain">Start chatting with Super AI Engineer LLM</p>
           <p class="mt-1 max-w-sm text-sm">Type a prompt below, or open the Gallery for ready-made examples.</p>
         </div>
       {/if}

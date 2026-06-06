@@ -13,7 +13,7 @@
 </script>
 
 <svelte:head>
-  <title>Playground — Thai LLM</title>
+  <title>Playground - Super AI Engineer LLM</title>
 </svelte:head>
 
 <section class="section pt-10">
@@ -21,7 +21,7 @@
     <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div>
         <span class="eyebrow mb-3">Playground</span>
-        <h1 class="text-3xl font-bold text-textmain sm:text-4xl">Chat with the Thai LLM</h1>
+        <h1 class="text-3xl font-bold text-textmain sm:text-4xl">Chat with Super AI Engineer LLM</h1>
         <p class="mt-2 max-w-2xl text-textmuted">
           Streaming responses, tunable parameters, and live runtime metrics — every request is logged.
         </p>

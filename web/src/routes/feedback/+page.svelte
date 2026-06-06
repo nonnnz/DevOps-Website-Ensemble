@@ -49,7 +49,7 @@
 </script>
 
 <svelte:head>
-  <title>Feedback — Thai LLM</title>
+  <title>Feedback - Super AI Engineer LLM</title>
 </svelte:head>
 
 <section class="section pt-12">

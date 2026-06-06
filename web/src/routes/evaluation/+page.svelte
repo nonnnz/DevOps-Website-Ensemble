@@ -16,7 +16,7 @@
 </script>
 
 <svelte:head>
-  <title>Evaluation — Thai LLM</title>
+  <title>Evaluation - Super AI Engineer LLM</title>
 </svelte:head>
 
 <section class="section pt-12">
