@@ -2,6 +2,7 @@
   import Button from '$lib/components/Button.svelte';
   import SectionHeader from '$lib/components/SectionHeader.svelte';
   import MascotStage from '$lib/components/MascotStage.svelte';
+  import FuturisticBackground from '$lib/components/FuturisticBackground.svelte';
   import MetricCard from '$lib/components/MetricCard.svelte';
   import GalleryImageCard from '$lib/components/GalleryImageCard.svelte';
   import HeroBg from '$lib/components/HeroBg.svelte';
@@ -9,6 +10,7 @@
   import { modelHighlights, evalSnapshot } from '$lib/data/home.js';
   import { galleryImages } from '$lib/data/gallery.js';
   import { researchCards } from '$lib/data/research.js';
+  import { reveal } from '$lib/utils/reveal.js';
 
   const heroSnippet = `from openai import OpenAI
 
@@ -80,7 +82,7 @@ response = client.chat.completions.create(
       <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-600 dark:text-blue-100/80">
         {site.description}
       </p>
-      <div class="mt-8 flex flex-wrap gap-3">
+      <div class="rise mt-8 flex flex-wrap gap-3" style="animation-delay:.24s">
         <Button href="/playground" size="lg">Playground</Button>
         <Button href="/docs" size="lg" variant="outline" class="border-primary/30 bg-white/70 text-primary backdrop-blur-sm hover:bg-primary-soft dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/15">View Doc</Button>
       </div>

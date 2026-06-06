@@ -1,11 +1,38 @@
 <script>
   import { page } from '$app/stores';
+  import { onMount } from 'svelte';
   import { navLinks } from '$lib/data/site.js';
 
   let open = false;
   $: path = $page.url.pathname;
   $: centerLinks = navLinks.filter((link) => link.href !== '/');
   const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href));
+
+  // Sliding pill indicator (opentyphoon.ai style): a highlight that glides to the
+  // hovered link, returning to the active one on mouse-leave.
+  let linkEls = [];
+  let hovered = -1;
+  let indStyle = 'opacity:0';
+  $: activeIndex = centerLinks.findIndex((link) => isActive(link.href));
+  $: shown = hovered >= 0 ? hovered : activeIndex;
+
+  function place(i) {
+    const el = linkEls[i];
+    if (!el) {
+      indStyle = 'opacity:0';
+      return;
+    }
+    indStyle = `opacity:1; width:${el.offsetWidth}px; height:${el.offsetHeight}px; transform:translateX(${el.offsetLeft}px)`;
+  }
+  // Re-place whenever the highlighted target changes (browser only).
+  $: if (typeof window !== 'undefined') place(shown);
+
+  onMount(() => {
+    place(shown);
+    const onResize = () => place(shown);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  });
 </script>
 
 <header class="fixed inset-x-0 top-4 z-50 pointer-events-none">
@@ -40,7 +67,7 @@
 
       <a
         href="/playground"
-        class="rounded-full bg-primary px-5 py-3 text-base font-semibold text-white shadow-soft transition hover:bg-primary-deep focus:outline-none focus:ring-2 focus:ring-primary/30"
+        class="rounded-full bg-gradient-to-r from-[#22D3EE] via-primary to-[#7C5CFF] px-5 py-3 text-base font-semibold text-white shadow-soft transition hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-primary/30"
       >
         Playground
       </a>

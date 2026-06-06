@@ -16,11 +16,15 @@
   export { className as class };
 
   const variants = {
-    primary:   'bg-primary text-white hover:bg-primary-deep shadow-soft',
-    secondary: 'bg-primary-soft text-primary hover:bg-[#dceaff] dark:bg-primary/20 dark:text-cyan-300 dark:hover:bg-primary/30',
-    outline:   'border border-bordersoft bg-white text-textmain hover:border-primary hover:text-primary dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 dark:hover:border-white/30 dark:hover:text-white',
-    ghost:     'text-textmuted hover:text-primary hover:bg-primary-soft dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/10',
-    danger:    'bg-danger text-white hover:bg-red-600'
+    // Glowing cyan -> blue -> violet gradient that matches the futuristic background.
+    primary:
+      'bg-gradient-to-r from-[#22D3EE] via-primary to-[#7C5CFF] text-white shadow-[0_10px_30px_-8px_rgba(36,127,255,0.6)] hover:shadow-[0_14px_40px_-6px_rgba(36,127,255,0.8)] hover:brightness-[1.05]',
+    secondary:
+      'border border-primary/20 bg-primary-soft text-primary hover:bg-[#dceaff] hover:border-primary/40',
+    outline:
+      'border border-bordersoft bg-white/70 text-textmain backdrop-blur-sm hover:border-primary hover:text-primary hover:shadow-[0_10px_30px_-12px_rgba(36,127,255,0.5)]',
+    ghost: 'text-textmuted hover:text-primary hover:bg-primary-soft',
+    danger: 'bg-danger text-white hover:bg-red-600'
   };
   const sizes = {
     sm: 'px-3 py-1.5 text-sm',
@@ -29,7 +33,7 @@
   };
 
   $: classes = [
-    'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary/30',
+    'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition duration-200 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary/30',
     variants[variant] || variants.primary,
     sizes[size] || sizes.md,
     full ? 'w-full' : '',

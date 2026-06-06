@@ -16,7 +16,7 @@
    *   - Switch the home page usage to mode="webgl"
    *   - Tune camera / scale / lighting in MascotWebGL.svelte
    */
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { heroPills } from '$lib/data/site.js';
   import StatusPill from './StatusPill.svelte';
@@ -30,6 +30,22 @@
   export let interactive = true;
   export let pills = heroPills;
   export let framed = true;
+  /** Show an animated neon ring around the mascot. */
+  export let ring = false;
+  /** Cycling speech-bubble phrases (empty = no bubble). */
+  export let messages = [];
+
+  // Speech bubble: rotate through the phrases.
+  let msgIndex = 0;
+  let bubbleTimer;
+  onMount(() => {
+    if (messages.length > 1) {
+      bubbleTimer = setInterval(() => {
+        msgIndex = (msgIndex + 1) % messages.length;
+      }, 3600);
+    }
+  });
+  onDestroy(() => clearInterval(bubbleTimer));
 
   let WebGLComponent = null;
   let webglFailed = false;
@@ -164,7 +180,19 @@
       {#if pills[2]}<div class="absolute bottom-4 left-4"><StatusPill label={pills[2].label} tone={pills[2].tone} /></div>{/if}
       {#if pills[3]}<div class="absolute bottom-4 right-4"><StatusPill label={pills[3].label} tone={pills[3].tone} pulse /></div>{/if}
     </div>
+
+    {#if ring}
+      <div class="neon-ring" aria-hidden="true"></div>
+    {/if}
   </div>
+
+  {#if messages.length}
+    <div class="speech-bubble left-2 top-1 text-sm sm:left-6 sm:top-3" aria-live="polite">
+      {#key msgIndex}
+        <span class="speech-pop">{messages[msgIndex]}</span>
+      {/key}
+    </div>
+  {/if}
 
   <!-- Status pills (mobile: wrapped row below the stage) -->
   <div class="mt-4 flex flex-wrap justify-center gap-2 md:hidden">

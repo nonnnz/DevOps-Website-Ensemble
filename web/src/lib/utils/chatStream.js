@@ -9,10 +9,11 @@
  * @param {(done:object)=>void} [handlers.onDone]
  * @param {(message:string)=>void} [handlers.onError]
  * @param {AbortSignal} [signal]
+ * @param {string} [url] endpoint to POST to (defaults to /api/chat)
  * @returns {Promise<void>}
  */
-export async function streamChatRequest(payload, handlers = {}, signal) {
-  const res = await fetch('/api/chat', {
+export async function streamChatRequest(payload, handlers = {}, signal, url = '/api/chat') {
+  const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
