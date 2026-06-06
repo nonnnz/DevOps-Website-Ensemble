@@ -8,3 +8,6 @@ node_modules
 *.log
 /static/models/*.glb
 .vite
+
+# local eval submissions store
+eval-store.json

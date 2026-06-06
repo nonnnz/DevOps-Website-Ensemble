@@ -1,11 +1,21 @@
 <script>
   import SectionHeader from '$lib/components/SectionHeader.svelte';
   import MetricCard from '$lib/components/MetricCard.svelte';
-  import { formatDateTime } from '$lib/utils/format.js';
+  import Leaderboard from '$lib/components/Leaderboard.svelte';
+  import CapabilityRadar from '$lib/components/CapabilityRadar.svelte';
 
   export let data;
   $: evaluations = data.evaluations || [];
-  $: quality = evaluations.filter((e) => e.category === 'quality');
+  $: evalAxes = data.evalBoard?.axes || [];
+  $: evalModels = data.evalBoard?.models || [];
+
+  // Eval API example (kept as a string so Svelte does not parse the braces).
+  const evalCurl = `curl -X POST https://your-host/eval/Qwen-Thai-SFT \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "Qwen-Thai-SFT",
+    "tasks": { "exam": 71, "math": 58, "inst": 74, "safe": 91 }
+  }'`;
   $: serving = evaluations.filter((e) => e.category === 'serving');
 
   function tone(e) {
@@ -19,7 +29,7 @@
   <title>Evaluation - Super AI Engineer LLM</title>
 </svelte:head>
 
-<section class="section pt-12">
+<section class="section pt-32">
   <div class="container-app">
     <SectionHeader
       eyebrow="Evaluation"
@@ -27,56 +37,49 @@
       subtitle="Benchmarks across Thai understanding, reasoning, safety and real-world serving performance."
     />
 
-    <!-- Quality metrics -->
-    <h3 class="mb-4 text-lg font-bold text-textmain">Model quality</h3>
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-      {#each quality as e}
-        <MetricCard
-          label={e.benchmark_name}
-          value={e.score}
-          unit={e.metric}
-          tone={tone(e)}
-          progress={e.metric === '%' ? e.score : null}
-          sublabel={e.notes}
-        />
-      {/each}
+    <!-- Leaderboard + Capability Radar -->
+    <div class="mb-14 grid gap-6 lg:grid-cols-[1.5fr_1fr]">
+      <Leaderboard axes={evalAxes} models={evalModels} />
+      <CapabilityRadar axes={evalAxes} models={evalModels} />
     </div>
 
     <!-- Serving metrics -->
-    <h3 class="mb-4 mt-12 text-lg font-bold text-textmain">Serving metrics</h3>
+    <h3 class="mb-4 text-lg font-bold text-textmain">Serving metrics</h3>
     <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {#each serving as e}
         <MetricCard label={e.benchmark_name} value={e.score} unit={e.metric} tone={tone(e)} sublabel={e.notes} />
       {/each}
     </div>
 
-    <!-- Benchmark table -->
-    <h3 class="mb-4 mt-12 text-lg font-bold text-textmain">Benchmark results</h3>
-    <div class="card-soft overflow-hidden">
-      <div class="scrollbar-thin overflow-x-auto">
-        <table class="w-full min-w-[640px] text-left text-sm">
-          <thead class="bg-surface text-xs uppercase tracking-wide text-textmuted">
-            <tr>
-              <th class="px-5 py-3">Benchmark</th>
-              <th class="px-5 py-3">Category</th>
-              <th class="px-5 py-3">Model</th>
-              <th class="px-5 py-3">Score</th>
-              <th class="px-5 py-3">Notes</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-bordersoft">
-            {#each evaluations as e}
-              <tr class="hover:bg-surface/60">
-                <td class="px-5 py-3 font-medium text-textmain">{e.benchmark_name}</td>
-                <td class="px-5 py-3 capitalize text-textmuted">{e.category}</td>
-                <td class="px-5 py-3 font-mono text-xs text-textmuted">{e.model_id}</td>
-                <td class="px-5 py-3 font-semibold text-textmain">{e.score} {e.metric}</td>
-                <td class="px-5 py-3 text-textmuted">{e.notes || '-'}</td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
+    <!-- Eval API -->
+    <div class="card-soft mt-12 p-6">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h3 class="text-lg font-bold text-textmain">Submit eval results — API</h3>
+        <code class="rounded-lg bg-primary-soft px-2.5 py-1 font-mono text-xs text-primary">POST /eval/{'{model_id}'}</code>
       </div>
+      <p class="mt-2 text-sm text-textmuted">
+        ส่งผล eval หลาย task ของแต่ละโมเดลเข้ามา แล้ว Leaderboard + Radar จะอัปเดตตาม
+        (task keys: exam, math, inst, chat, trans, nlu, legal, safe · ค่า 0–100)
+      </p>
+      <pre class="eval-code"><code>{evalCurl}</code></pre>
+      <p class="mt-2 text-xs text-textmuted">เอกสารฉบับเต็มที่ <code class="font-mono">web/EVAL_API.md</code></p>
     </div>
   </div>
 </section>
+
+<style>
+  .eval-code {
+    margin-top: 0.75rem;
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    background: #0f2a57;
+    padding: 1rem;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    color: #e8f1ff;
+  }
+  .eval-code :global(code) {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    white-space: pre;
+  }
+</style>

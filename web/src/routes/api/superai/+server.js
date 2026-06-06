@@ -88,7 +88,7 @@ export async function POST({ request }) {
             max_new_tokens: maxNewTokens,
             temperature: params.temperature,
             top_p: params.top_p,
-            do_sample: params.temperature > 0
+            do_sample: typeof body.do_sample === 'boolean' ? body.do_sample : params.temperature > 0
           })
         });
 

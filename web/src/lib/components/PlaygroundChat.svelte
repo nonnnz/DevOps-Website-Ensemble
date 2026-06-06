@@ -25,9 +25,9 @@
   /** @type {Array<{role:string, content:string, logId?:string|null}>} */
   let messages = [];
   let model = defaultModel;
-  // Default to Auto (mock, always works); SuperAI is selectable once its
-  // upstream server is healthy. SuperAI routes to /api/superai, others to /api/chat.
-  let backend = 'auto';
+  // Default to the configured backend (Auto = mock, always works). SuperAI is
+  // selectable; it routes to /api/superai, others to /api/chat.
+  let backend = defaultBackend || 'auto';
   let isStreaming = false;
   let errorMsg = '';
   let metrics = null;
@@ -52,7 +52,13 @@
   // The hosted SuperAI model. Selecting it (or backend 'superai') routes the
   // request to /api/superai, which calls https://spaiss6.pangpuriye.info/api/infer.
   const SUPERAI_MODEL = 'Wenwu190200201/spaiss6';
-  $: endpoint = backend === 'superai' || model === SUPERAI_MODEL ? '/api/superai' : '/api/chat';
+  $: isSuperAI = backend === 'superai' || model === SUPERAI_MODEL;
+  $: endpoint = isSuperAI ? '/api/superai' : '/api/chat';
+
+  // SuperAI infer supports only: temperature, top_p, max_new_tokens (<=4096), do_sample.
+  let doSample = true;
+  $: maxTokensCap = isSuperAI ? 4096 : 8192;
+  $: if (settings.max_tokens > maxTokensCap) settings.max_tokens = maxTokensCap;
 
   $: activeModels = models.filter((m) => m.status !== 'disabled');
 
@@ -92,8 +98,11 @@
         temperature: settings.temperature,
         top_p: settings.top_p,
         max_tokens: settings.max_tokens,
-        repetition_penalty: settings.repetition_penalty,
-        stream: settings.stream
+        stream: settings.stream,
+        // Only send params the target API actually supports.
+        ...(isSuperAI
+          ? { do_sample: doSample }
+          : { repetition_penalty: settings.repetition_penalty })
       },
       {
         onMeta: (meta) => {
@@ -263,19 +272,35 @@
           <div class="flex justify-between">
             <span class="label-soft">Max tokens</span><span class="text-textmuted">{settings.max_tokens}</span>
           </div>
-          <input type="range" min="64" max="8192" step="64" bind:value={settings.max_tokens} class="w-full accent-primary" />
+          <input type="range" min="64" max={maxTokensCap} step="64" bind:value={settings.max_tokens} class="w-full accent-primary" />
         </div>
-        <div>
-          <div class="flex justify-between">
-            <span class="label-soft">Repetition penalty</span><span class="text-textmuted">{settings.repetition_penalty}</span>
+
+        {#if isSuperAI}
+          <!-- SuperAI: do_sample (greedy when off); repetition_penalty is not supported by the API -->
+          <label class="flex items-center justify-between pt-1">
+            <span class="label-soft mb-0">Do sample</span>
+            <input type="checkbox" bind:checked={doSample} class="h-4 w-4 accent-primary" />
+          </label>
+        {:else}
+          <div>
+            <div class="flex justify-between">
+              <span class="label-soft">Repetition penalty</span><span class="text-textmuted">{settings.repetition_penalty}</span>
+            </div>
+            <input type="range" min="0.5" max="2" step="0.05" bind:value={settings.repetition_penalty} class="w-full accent-primary" />
           </div>
-          <input type="range" min="0.5" max="2" step="0.05" bind:value={settings.repetition_penalty} class="w-full accent-primary" />
-        </div>
+        {/if}
+
         <label class="flex items-center justify-between pt-1">
           <span class="label-soft mb-0">Stream</span>
           <input type="checkbox" bind:checked={settings.stream} class="h-4 w-4 accent-primary" />
         </label>
       </div>
+
+      {#if isSuperAI}
+        <p class="mt-3 text-xs text-textmuted">
+          SuperAI รองรับ: temperature, top_p, max_tokens (≤4096), do_sample · ไม่รองรับ repetition_penalty
+        </p>
+      {/if}
     </div>
 
     {#if enableRuntimeMetrics}
