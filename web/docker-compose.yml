@@ -1,0 +1,24 @@
+# PostgreSQL for the Thai LLM portal.
+# Start with:  docker compose up -d   (or: npm run db:up)
+# Credentials here must match DATABASE_URL in your .env.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: thaillm-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: thaillm
+      POSTGRES_PASSWORD: thaillm
+      POSTGRES_DB: thaillm
+    ports:
+      - "5432:5432"
+    volumes:
+      - thaillm_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U thaillm -d thaillm"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  thaillm_pgdata:

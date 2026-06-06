@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white font-sans text-textmain antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply tracking-tight;
+  }
+  ::selection {
+    background: rgba(36, 127, 255, 0.18);
+  }
+}
+
+@layer components {
+  .container-app {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .section {
+    @apply py-16 sm:py-20;
+  }
+  .card-soft {
+    @apply rounded-2xl border border-bordersoft bg-white shadow-card;
+  }
+  .card-hover {
+    @apply transition duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-soft;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium;
+  }
+  .input-soft {
+    @apply w-full rounded-xl border border-bordersoft bg-white px-3 py-2 text-sm text-textmain outline-none transition placeholder:text-textmuted/60 focus:border-primary focus:ring-2 focus:ring-primary/20;
+  }
+  .label-soft {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-textmuted;
+  }
+  .link-muted {
+    @apply text-textmuted transition hover:text-primary;
+  }
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-bordersoft bg-primary-soft px-3 py-1 text-xs font-semibold text-primary;
+  }
+  .prose-clean p {
+    @apply leading-relaxed text-textmuted;
+  }
+}
+
+@layer utilities {
+  .gradient-page {
+    background:
+      radial-gradient(1100px 520px at 78% -8%, #eaf3ff 0%, rgba(255, 255, 255, 0) 60%),
+      radial-gradient(900px 480px at 5% 0%, #f2f7ff 0%, rgba(255, 255, 255, 0) 55%);
+  }
+  .gradient-stage {
+    background: linear-gradient(160deg, #ffffff 0%, #eaf3ff 55%, #dcebff 100%);
+  }
+  .glow-primary {
+    box-shadow: 0 40px 90px -30px rgba(36, 127, 255, 0.55);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #cbdcf5 transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #cbdcf5;
+    border-radius: 9999px;
+  }
+}
+
+/* Respect users who prefer reduced motion (mascot float, transitions, etc.) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

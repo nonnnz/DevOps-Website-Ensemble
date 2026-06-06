@@ -1,0 +1,143 @@
+// Prisma schema for the Thai LLM portal.
+// Field names use snake_case to match the API/spec exactly.
+// All DB access goes through Prisma (parameterized queries -> no SQL injection).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Model metadata shown on /model, /playground and managed in /admin/config.
+model Model {
+  id                String   @id @default(cuid())
+  model_id          String   @unique // API model id, e.g. "thai-llm-chat-v0.1"
+  display_name      String
+  model_type        String // base | instruct | chat
+  parameters        String // human readable, e.g. "8B"
+  context_length    Int      @default(8192)
+  max_output_tokens Int      @default(2048)
+  status            String   @default("active") // active | hidden | disabled
+  license           String   @default("Apache-2.0")
+  hf_url            String?
+  download_url      String?
+  supports_b200     Boolean  @default(true)
+  supports_lanta    Boolean  @default(true)
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  @@map("models")
+}
+
+/// Inference / backend configuration (editable from /admin/config).
+/// NOTE: the real secret API key is NEVER stored here - it lives in env (LLM_API_KEY).
+/// api_key_placeholder only holds a masked hint for the UI.
+model ApiConfig {
+  id                      String   @id @default(cuid())
+  mode                    String   @default("mock") // mock | real
+  default_backend         String   @default("auto") // auto | b200 | lanta
+  b200_endpoint           String?
+  lanta_endpoint          String?
+  openai_base_url         String?
+  model_server_type       String   @default("vLLM") // vLLM | TGI | Triton | Custom
+  api_key_placeholder     String   @default("") // masked hint only, e.g. "sk-****1234"
+  timeout_seconds         Int      @default(60)
+  max_concurrent_requests Int      @default(8)
+  rate_limit_per_minute   Int      @default(60)
+  created_at              DateTime @default(now())
+  updated_at              DateTime @updatedAt
+
+  @@map("api_configs")
+}
+
+/// Feature flags toggling site capabilities (editable from /admin/config).
+model FeatureFlag {
+  id                     String   @id @default(cuid())
+  enable_playground      Boolean  @default(true)
+  enable_streaming       Boolean  @default(true)
+  enable_feedback        Boolean  @default(true)
+  enable_gallery_prompts Boolean  @default(true)
+  enable_runtime_metrics Boolean  @default(true)
+  enable_public_api_docs Boolean  @default(true)
+  enable_webgl_mascot    Boolean  @default(true)
+  created_at             DateTime @default(now())
+  updated_at             DateTime @updatedAt
+
+  @@map("feature_flags")
+}
+
+/// Every playground request is logged here (prompt, response, settings, metrics).
+model PlaygroundLog {
+  id                 String     @id @default(cuid())
+  request_id         String     @unique
+  model_id           String
+  backend            String
+  system_prompt      String?
+  user_prompt        String
+  assistant_response String?
+  temperature        Float      @default(0.7)
+  top_p              Float      @default(0.95)
+  max_tokens         Int        @default(1024)
+  repetition_penalty Float      @default(1.1)
+  stream             Boolean    @default(true)
+  latency_ms         Int        @default(0)
+  input_tokens       Int        @default(0)
+  output_tokens      Int        @default(0)
+  tokens_per_second  Float      @default(0)
+  status             String     @default("success") // success | error
+  error_message      String?
+  created_at         DateTime   @default(now())
+
+  feedbacks Feedback[]
+
+  @@index([model_id])
+  @@index([backend])
+  @@index([created_at])
+  @@map("playground_logs")
+}
+
+/// User feedback attached to a playground log.
+model Feedback {
+  id                String         @id @default(cuid())
+  playground_log_id String?
+  feedback_type     String // good | bad | hallucination | unsafe
+  comment           String?
+  created_at        DateTime       @default(now())
+
+  playground_log PlaygroundLog? @relation(fields: [playground_log_id], references: [id], onDelete: SetNull)
+
+  @@index([feedback_type])
+  @@map("feedback")
+}
+
+/// Benchmark / evaluation results shown on /evaluation.
+model EvaluationResult {
+  id             String   @id @default(cuid())
+  model_id       String
+  benchmark_name String
+  category       String // quality | serving
+  score          Float
+  metric         String // %, ms, tokens/s, ...
+  notes          String?
+  created_at     DateTime @default(now())
+
+  @@index([model_id])
+  @@map("evaluation_results")
+}
+
+/// Results of backend health/status checks (from /admin/config status panel).
+model StatusCheck {
+  id            String   @id @default(cuid())
+  backend       String // b200 | lanta | chat
+  status        String // online | offline | degraded
+  latency_ms    Int      @default(0)
+  error_message String?
+  created_at    DateTime @default(now())
+
+  @@index([backend])
+  @@index([created_at])
+  @@map("status_checks")
+}
