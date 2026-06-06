@@ -119,6 +119,36 @@
   }
 }
 
+/* Hero fade — blends animated bg into page background */
+.hero-fade {
+  background: linear-gradient(to bottom, transparent, #ffffff);
+}
+@media (prefers-color-scheme: dark) {
+  .hero-fade {
+    background: linear-gradient(to bottom, transparent, #030914);
+  }
+}
+
+/* Mascot back-glow — soft radial halo that separates 3D element from flat bg */
+.mascot-glow {
+  background: radial-gradient(ellipse 72% 80% at 50% 52%,
+    rgba(36, 127, 255, 0.14) 0%,
+    rgba(36, 127, 255, 0.04) 55%,
+    transparent 72%
+  );
+  filter: blur(22px);
+}
+@media (prefers-color-scheme: dark) {
+  .mascot-glow {
+    background: radial-gradient(ellipse 72% 80% at 50% 52%,
+      rgba(36, 127, 255, 0.28) 0%,
+      rgba(160, 40, 255, 0.10) 50%,
+      transparent 72%
+    );
+    filter: blur(28px);
+  }
+}
+
 /* Respect users who prefer reduced motion (mascot float, transitions, etc.) */
 @media (prefers-reduced-motion: reduce) {
   *,

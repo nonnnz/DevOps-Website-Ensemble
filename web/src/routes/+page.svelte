@@ -4,6 +4,7 @@
   import MascotStage from '$lib/components/MascotStage.svelte';
   import MetricCard from '$lib/components/MetricCard.svelte';
   import GalleryImageCard from '$lib/components/GalleryImageCard.svelte';
+  import HeroBg from '$lib/components/HeroBg.svelte';
   import { site } from '$lib/data/site.js';
   import { modelHighlights, evalSnapshot } from '$lib/data/home.js';
   import { galleryImages } from '$lib/data/gallery.js';
@@ -44,23 +45,37 @@ response = client.chat.completions.create(
 </svelte:head>
 
 <!-- HERO -->
-<section class="section pt-0 sm:pt-0">
-  <div class="container-app grid items-center gap-12 lg:grid-cols-2">
+<section class="relative overflow-hidden pt-0 sm:pt-0" style="min-height: 680px;">
+  <!-- Animated futuristic city background -->
+  <HeroBg />
+
+  <!-- Gradient fade to page background at bottom — works for both light and dark themes -->
+  <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-36 z-10 hero-fade"></div>
+
+  <div class="container-app relative z-20 grid items-center gap-12 lg:grid-cols-2 py-16 sm:py-20">
     <div>
-      <span class="eyebrow mb-5">Super AI Engineer LLM</span>
-      <h1 class="text-4xl font-extrabold leading-tight text-textmain sm:text-5xl lg:text-6xl text-balance">
+      <!-- Eyebrow: dark on light bg, cyan on dark bg -->
+      <span class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary-soft px-3 py-1 text-xs font-semibold text-primary dark:border-white/20 dark:bg-white/10 dark:text-cyan-300 backdrop-blur-sm mb-5">
+        Super AI Engineer LLM
+      </span>
+      <!-- H1: slate-900 on light bg (WCAG AA), white on dark bg -->
+      <h1 class="text-4xl font-extrabold leading-tight text-slate-900 dark:text-white sm:text-5xl lg:text-6xl text-balance">
         Super AI Engineer<br />LLM
       </h1>
-      <p class="mt-5 max-w-xl text-lg leading-relaxed text-textmuted">
+      <!-- Body copy: slate-600 on light (contrast ≥ 4.5:1), blue-100 on dark -->
+      <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-600 dark:text-blue-100/80">
         {site.description}
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
         <Button href="/playground" size="lg">Playground</Button>
-        <Button href="/docs" size="lg" variant="outline">View Doc</Button>
+        <!-- Outline btn gets a frosted look on dark bg -->
+        <Button href="/docs" size="lg" variant="outline" class="dark:border-white/25 dark:bg-white/8 dark:text-white dark:hover:bg-white/15">View Doc</Button>
       </div>
     </div>
 
     <div class="relative">
+      <!-- Soft radial back-glow — creates depth, separates mascot from flat bg -->
+      <div class="pointer-events-none absolute inset-0 mascot-glow scale-125" aria-hidden="true"></div>
       <MascotStage
         mode={mascotMode}
         splineUrl={site.mascot.splineUrl}

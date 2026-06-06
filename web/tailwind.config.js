@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{html,js,svelte}'],
+  darkMode: 'media',
   theme: {
     extend: {
       // Design tokens (see README "Design").
