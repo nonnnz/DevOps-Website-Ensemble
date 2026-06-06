@@ -19,6 +19,7 @@ export function envApiDefaults() {
     default_backend: env.DEFAULT_BACKEND || 'auto',
     b200_endpoint: env.B200_ENDPOINT_URL || '',
     lanta_endpoint: env.LANTA_ENDPOINT_URL || '',
+    local_endpoint: env.LOCAL_ENDPOINT_URL || 'http://localhost:8000',
     openai_base_url: env.LLM_API_BASE_URL || '',
     model_server_type: 'vLLM',
     api_key_placeholder: maskKey(env.LLM_API_KEY || ''),
@@ -112,6 +113,8 @@ export function resolveBackend(requestedBackend, cfg) {
     baseUrl = cfg.b200_endpoint || env.B200_ENDPOINT_URL || cfg.openai_base_url || env.LLM_API_BASE_URL || '';
   } else if (backend === 'lanta') {
     baseUrl = cfg.lanta_endpoint || env.LANTA_ENDPOINT_URL || cfg.openai_base_url || env.LLM_API_BASE_URL || '';
+  } else if (backend === 'local') {
+    baseUrl = cfg.local_endpoint || env.LOCAL_ENDPOINT_URL || 'http://localhost:8000';
   } else {
     baseUrl = cfg.openai_base_url || env.LLM_API_BASE_URL || '';
   }
