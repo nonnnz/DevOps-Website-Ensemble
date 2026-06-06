@@ -150,8 +150,8 @@
   <!-- Chat column -->
   <div class="card-soft flex flex-col overflow-hidden" style="min-height: 70vh;">
     <!-- toolbar -->
-    <div class="flex flex-wrap items-center gap-2 border-b border-bordersoft p-3">
-      <label class="flex items-center gap-2 text-xs text-textmuted">
+    <div class="flex flex-wrap items-center gap-2 border-b border-bordersoft p-3 dark:border-white/10">
+      <label class="flex items-center gap-2 text-xs text-textmuted dark:text-slate-400">
         Model
         <select bind:value={model} class="input-soft !w-auto py-1.5 text-sm">
           <option value={SUPERAI_MODEL}>Wenwu190200201/spaiss6 (SuperAI live)</option>
@@ -163,7 +163,7 @@
           {/if}
         </select>
       </label>
-      <label class="flex items-center gap-2 text-xs text-textmuted">
+      <label class="flex items-center gap-2 text-xs text-textmuted dark:text-slate-400">
         Backend
         <select bind:value={backend} class="input-soft !w-auto py-1.5 text-sm">
           {#each backends as b}
@@ -179,9 +179,9 @@
     <!-- messages -->
     <div bind:this={chatEl} class="scrollbar-thin flex-1 space-y-4 overflow-y-auto p-4">
       {#if messages.length === 0}
-        <div class="flex h-full min-h-[40vh] flex-col items-center justify-center text-center text-textmuted">
-          <span class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-soft text-2xl">💬</span>
-          <p class="font-medium text-textmain">Start chatting with Super AI Engineer LLM</p>
+        <div class="flex h-full min-h-[40vh] flex-col items-center justify-center text-center text-textmuted dark:text-slate-400">
+          <span class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-soft dark:bg-primary/20 text-2xl">💬</span>
+          <p class="font-medium text-textmain dark:text-white">Start chatting with Aksorn-LM</p>
           <p class="mt-1 max-w-sm text-sm">Type a prompt below, or open the Gallery for ready-made examples.</p>
         </div>
       {/if}
@@ -195,7 +195,7 @@
           </div>
         {:else}
           <div class="flex flex-col gap-2">
-            <div class="max-w-[90%] whitespace-pre-wrap rounded-2xl rounded-bl-sm border border-bordersoft bg-surface px-4 py-2.5 text-sm leading-relaxed text-textmain">
+            <div class="max-w-[90%] whitespace-pre-wrap rounded-2xl rounded-bl-sm border border-bordersoft bg-surface px-4 py-2.5 text-sm leading-relaxed text-textmain dark:border-white/10 dark:text-slate-100">
               {#if msg.content}
                 {msg.content}{#if isStreaming && i === messages.length - 1}<span class="ml-0.5 inline-block h-4 w-1.5 animate-pulseSoft bg-primary align-middle"></span>{/if}
               {:else if isStreaming}
@@ -217,7 +217,7 @@
     </div>
 
     <!-- input -->
-    <div class="border-t border-bordersoft p-3">
+    <div class="border-t border-bordersoft p-3 dark:border-white/10">
       <div class="flex items-end gap-2">
         <textarea
           bind:value={input}
@@ -239,35 +239,35 @@
   <div class="space-y-6">
     <!-- system prompt -->
     <div class="card-soft p-5">
-      <h3 class="mb-3 text-sm font-bold text-textmain">System Prompt</h3>
+      <h3 class="mb-3 text-sm font-bold text-textmain dark:text-white">System Prompt</h3>
       <textarea bind:value={systemPrompt} rows="3" class="input-soft resize-none text-sm"></textarea>
     </div>
 
     <!-- generation params -->
     <div class="card-soft p-5">
-      <h3 class="mb-4 text-sm font-bold text-textmain">Parameters</h3>
+      <h3 class="mb-4 text-sm font-bold text-textmain dark:text-white">Parameters</h3>
       <div class="space-y-4 text-sm">
         <div>
           <div class="flex justify-between">
-            <span class="label-soft">Temperature</span><span class="text-textmuted">{settings.temperature}</span>
+            <span class="label-soft">Temperature</span><span class="text-textmuted dark:text-slate-400">{settings.temperature}</span>
           </div>
           <input type="range" min="0" max="2" step="0.05" bind:value={settings.temperature} class="w-full accent-primary" />
         </div>
         <div>
           <div class="flex justify-between">
-            <span class="label-soft">Top P</span><span class="text-textmuted">{settings.top_p}</span>
+            <span class="label-soft">Top P</span><span class="text-textmuted dark:text-slate-400">{settings.top_p}</span>
           </div>
           <input type="range" min="0" max="1" step="0.01" bind:value={settings.top_p} class="w-full accent-primary" />
         </div>
         <div>
           <div class="flex justify-between">
-            <span class="label-soft">Max tokens</span><span class="text-textmuted">{settings.max_tokens}</span>
+            <span class="label-soft">Max tokens</span><span class="text-textmuted dark:text-slate-400">{settings.max_tokens}</span>
           </div>
           <input type="range" min="64" max="8192" step="64" bind:value={settings.max_tokens} class="w-full accent-primary" />
         </div>
         <div>
           <div class="flex justify-between">
-            <span class="label-soft">Repetition penalty</span><span class="text-textmuted">{settings.repetition_penalty}</span>
+            <span class="label-soft">Repetition penalty</span><span class="text-textmuted dark:text-slate-400">{settings.repetition_penalty}</span>
           </div>
           <input type="range" min="0.5" max="2" step="0.05" bind:value={settings.repetition_penalty} class="w-full accent-primary" />
         </div>

@@ -51,10 +51,10 @@
     @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium;
   }
   .input-soft {
-    @apply w-full rounded-xl border border-bordersoft bg-white px-3 py-2 text-sm text-textmain outline-none transition placeholder:text-textmuted/60 focus:border-primary focus:ring-2 focus:ring-primary/20;
+    @apply w-full rounded-xl border border-bordersoft bg-white px-3 py-2 text-sm text-textmain outline-none transition placeholder:text-textmuted/60 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:bg-slate-800 dark:border-white/10 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-primary/70;
   }
   .label-soft {
-    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-textmuted;
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-textmuted dark:text-slate-400;
   }
   .link-muted {
     @apply text-textmuted transition hover:text-primary dark:text-slate-400 dark:hover:text-white;
@@ -130,6 +130,10 @@
   /* Surface token has no dark variant in the config — swap it globally */
   .bg-surface {
     background-color: rgba(15, 23, 42, 0.55);
+  }
+  /* bordersoft token (#DCEBFF) is unreadable on dark — swap globally */
+  .border-bordersoft {
+    border-color: rgba(255, 255, 255, 0.1);
   }
 }
 
