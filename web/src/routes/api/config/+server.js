@@ -24,6 +24,7 @@ import {
   BACKENDS,
   SERVER_TYPES
 } from '$lib/server/validate.js';
+import { assertSafeEndpoint } from '$lib/server/security.js';
 
 export async function GET() {
   const [apiConfig, featureFlags] = await Promise.all([getApiConfig(), getFeatureFlags()]);
@@ -53,12 +54,29 @@ export async function POST({ request }) {
       placeholder = a.api_key_placeholder;
     }
 
+    const b200_endpoint = asString(a.b200_endpoint, 500);
+    const lanta_endpoint = asString(a.lanta_endpoint, 500);
+    const openai_base_url = asString(a.openai_base_url, 500);
+
+    // SSRF guard at save time: reject endpoints that point at private/metadata
+    // hosts (unless ALLOW_PRIVATE_ENDPOINTS=true). Prevents storing a URL that
+    // would later receive the real API key. Empty = "not configured", allowed.
+    for (const [field, value] of Object.entries({ b200_endpoint, lanta_endpoint, openai_base_url })) {
+      if (value && value.trim()) {
+        try {
+          assertSafeEndpoint(value.trim());
+        } catch (e) {
+          throw error(400, `${field}: ${e.message}`);
+        }
+      }
+    }
+
     const data = {
       mode: oneOf(a.mode, API_MODES, current.mode || 'mock'),
       default_backend: oneOf(a.default_backend, BACKENDS, current.default_backend || 'auto'),
-      b200_endpoint: asString(a.b200_endpoint, 500),
-      lanta_endpoint: asString(a.lanta_endpoint, 500),
-      openai_base_url: asString(a.openai_base_url, 500),
+      b200_endpoint,
+      lanta_endpoint,
+      openai_base_url,
       model_server_type: oneOf(a.model_server_type, SERVER_TYPES, current.model_server_type || 'vLLM'),
       api_key_placeholder: placeholder,
       timeout_seconds: clampNumber(a.timeout_seconds, 1, 600, current.timeout_seconds || 60),

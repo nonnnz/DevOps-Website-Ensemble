@@ -4,8 +4,14 @@
   import Button from '$lib/components/Button.svelte';
   import StatusPill from '$lib/components/StatusPill.svelte';
   import { statusTone } from '$lib/utils/format.js';
+  import { goto } from '$app/navigation';
 
   export let data;
+
+  async function logout() {
+    await fetch('/api/admin/session', { method: 'DELETE' });
+    await goto('/admin/login');
+  }
 
   let models = [...(data.models || [])];
 
@@ -80,11 +86,13 @@
 <section class="section pt-12">
   <div class="container-app max-w-5xl">
     <div class="mb-8">
-      <span class="eyebrow mb-3">Admin · ML DevOps</span>
-      <h1 class="text-3xl font-bold text-textmain sm:text-4xl">Configuration</h1>
-      <p class="mt-2 text-textmuted">Configure inference backends, models, feature flags, and run status checks.</p>
-      <div class="mt-3 rounded-xl border border-warning/30 bg-warning/10 px-4 py-2 text-sm text-warning">
-        ⚠ No authentication yet — protect <code class="font-mono">/admin/*</code> in <code class="font-mono">hooks.server.js</code> before deploying.
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <span class="eyebrow mb-3">Admin · ML DevOps</span>
+          <h1 class="text-3xl font-bold text-textmain sm:text-4xl">Configuration</h1>
+          <p class="mt-2 text-textmuted">Configure inference backends, models, feature flags, and run status checks.</p>
+        </div>
+        <Button variant="ghost" size="sm" on:click={logout}>Log out</Button>
       </div>
     </div>
 

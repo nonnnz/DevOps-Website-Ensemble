@@ -20,9 +20,18 @@
   export let enableRuntimeMetrics = true;
 
   // --- state --------------------------------------------------------------
-  let systemPrompt = 'You are a helpful Thai assistant. Answer clearly in Thai.';
+  let systemPrompt = 'คุณคือ MySuperAI ผู้ช่วย AI ภาษาไทย สร้างโดยทีม SuperAI ตอบภาษาไทยเสมอ กระชับ ตรงประเด็น ไม่ยกยอผู้ใช้';
   let input = initialPrompt || '';
-  /** @type {Array<{role:string, content:string, logId?:string|null}>} */
+  /**
+   * @type {Array<{
+   *   role: string,
+   *   content: string,
+   *   logId?: string|null,
+   *   thinking?: string,
+   *   thinkingOpen?: boolean,
+   *   retries?: number
+   * }>}
+   */
   let messages = [];
   let model = defaultModel;
   // Default to the configured backend (Auto = mock, always works). SuperAI is
@@ -46,7 +55,9 @@
     { value: 'superai', label: 'SuperAI (live)' },
     { value: 'auto', label: 'Auto' },
     { value: 'b200', label: 'B200' },
-    { value: 'lanta', label: 'LANTA' }
+    { value: 'lanta', label: 'LANTA' },
+    { value: 'local', label: 'Local' },
+    { value: 'modelharbor', label: 'ModelHarbor' }
   ];
 
   // The hosted SuperAI model. Selecting it (or backend 'superai') routes the
@@ -95,6 +106,7 @@
         messages: payloadMessages,
         model,
         backend,
+        agent_mode: agentMode,
         temperature: settings.temperature,
         top_p: settings.top_p,
         max_tokens: settings.max_tokens,
@@ -110,7 +122,7 @@
         },
         onDelta: (content) => {
           messages[assistantIndex].content += content;
-          messages = messages; // trigger reactivity
+          messages = messages;
           scrollToBottom();
         },
         onDone: (done) => {
@@ -123,6 +135,15 @@
         },
         onError: (message) => {
           errorMsg = message;
+        },
+        onThinking: (content) => {
+          messages[assistantIndex].thinking = content;
+          messages = messages;
+        },
+        onThinkingRetry: (ev) => {
+          messages[assistantIndex].retries = (messages[assistantIndex].retries || 0) + 1;
+          messages[assistantIndex].content = '';
+          messages = messages;
         }
       },
       controller.signal,
@@ -180,6 +201,10 @@
           {/each}
         </select>
       </label>
+      <label class="flex items-center gap-1.5 text-xs text-textmuted">
+        <input type="checkbox" bind:checked={agentMode} class="h-3.5 w-3.5 accent-primary" />
+        <span class:text-primary={agentMode} class:font-semibold={agentMode}>Agent mode</span>
+      </label>
       <div class="ml-auto flex gap-2">
         <Button variant="ghost" size="sm" on:click={clearChat}>Clear</Button>
       </div>
@@ -203,12 +228,38 @@
             </div>
           </div>
         {:else}
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col gap-1.5">
+            {#if msg.thinking || (isStreaming && i === messages.length - 1 && agentMode && !msg.content)}
+              <!-- Thinking block -->
+              <div class="max-w-[90%]">
+                <button
+                  class="flex w-full items-center gap-1.5 rounded-xl border border-bordersoft bg-surface/60 px-3 py-2 text-left text-xs text-textmuted hover:bg-surface"
+                  on:click={() => { msg.thinkingOpen = !msg.thinkingOpen; messages = messages; }}
+                >
+                  <span class="text-base leading-none">🧠</span>
+                  <span class="font-medium">
+                    {#if msg.thinking}
+                      ความคิด{msg.retries ? ` (ลองใหม่ ${msg.retries} ครั้ง)` : ''}
+                    {:else}
+                      กำลังคิด…
+                    {/if}
+                  </span>
+                  {#if msg.thinking}
+                    <span class="ml-auto">{msg.thinkingOpen ? '▲' : '▼'}</span>
+                  {/if}
+                </button>
+                {#if msg.thinkingOpen && msg.thinking}
+                  <div class="mt-1 rounded-xl border border-bordersoft bg-surface/40 px-3 py-2 text-xs italic text-textmuted">
+                    {msg.thinking}
+                  </div>
+                {/if}
+              </div>
+            {/if}
             <div class="max-w-[90%] whitespace-pre-wrap rounded-2xl rounded-bl-sm border border-bordersoft bg-surface px-4 py-2.5 text-sm leading-relaxed text-textmain">
               {#if msg.content}
                 {msg.content}{#if isStreaming && i === messages.length - 1}<span class="ml-0.5 inline-block h-4 w-1.5 animate-pulseSoft bg-primary align-middle"></span>{/if}
               {:else if isStreaming}
-                <span class="text-textmuted">กำลังคิด…</span>
+                <span class="text-textmuted">{agentMode ? 'กำลังวิเคราะห์…' : 'กำลังคิด…'}</span>
               {/if}
             </div>
             {#if enableFeedback && msg.logId}

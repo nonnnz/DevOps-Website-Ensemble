@@ -20,6 +20,7 @@ export function envApiDefaults() {
     b200_endpoint: env.B200_ENDPOINT_URL || '',
     lanta_endpoint: env.LANTA_ENDPOINT_URL || '',
     local_endpoint: env.LOCAL_ENDPOINT_URL || 'http://localhost:8000',
+    modelharbor_endpoint: env.MODELHARBOR_ENDPOINT_URL || 'http://swarm-manager.modelharbor.com:46120',
     openai_base_url: env.LLM_API_BASE_URL || '',
     model_server_type: 'vLLM',
     api_key_placeholder: maskKey(env.LLM_API_KEY || ''),
@@ -115,6 +116,8 @@ export function resolveBackend(requestedBackend, cfg) {
     baseUrl = cfg.lanta_endpoint || env.LANTA_ENDPOINT_URL || cfg.openai_base_url || env.LLM_API_BASE_URL || '';
   } else if (backend === 'local') {
     baseUrl = cfg.local_endpoint || env.LOCAL_ENDPOINT_URL || 'http://localhost:8000';
+  } else if (backend === 'modelharbor') {
+    baseUrl = cfg.modelharbor_endpoint || env.MODELHARBOR_ENDPOINT_URL || 'http://swarm-manager.modelharbor.com:46120';
   } else {
     baseUrl = cfg.openai_base_url || env.LLM_API_BASE_URL || '';
   }
@@ -123,6 +126,8 @@ export function resolveBackend(requestedBackend, cfg) {
     mode,
     backend,
     baseUrl: baseUrl.replace(/\/$/, ''),
+    // completions = /v1/completions (text prompt); chat = /v1/chat/completions (messages array)
+    apiStyle: backend === 'modelharbor' ? 'completions' : 'chat',
     // SECURITY: real key only from env, never from DB / client.
     apiKey: env.LLM_API_KEY || '',
     timeoutSeconds: cfg.timeout_seconds || 60

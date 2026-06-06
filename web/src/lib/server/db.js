@@ -14,9 +14,7 @@ const globalForPrisma = globalThis;
 
 export const prisma =
   globalForPrisma.__thaillm_prisma ??
-  new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error']
-  });
+  new PrismaClient({ log: [] });
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.__thaillm_prisma = prisma;
@@ -33,8 +31,7 @@ if (process.env.NODE_ENV !== 'production') {
 export async function safeQuery(fn, fallback, label = 'query') {
   try {
     return await fn();
-  } catch (err) {
-    console.warn(`[db] ${label} failed, using fallback:`, err?.message ?? err);
+  } catch {
     return fallback;
   }
 }

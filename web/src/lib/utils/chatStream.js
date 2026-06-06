@@ -2,12 +2,14 @@
  * Client helper: POST to /api/chat and read the NDJSON stream.
  * Calls the provided callbacks as events arrive.
  *
- * @param {object} payload  { messages, model, backend, temperature, top_p, max_tokens, repetition_penalty, stream }
+ * @param {object} payload  { messages, model, backend, agent_mode?, temperature, top_p, max_tokens, repetition_penalty, stream }
  * @param {object} handlers
- * @param {(meta:object)=>void} [handlers.onMeta]
+ * @param {(meta:object)=>void}    [handlers.onMeta]
  * @param {(content:string)=>void} [handlers.onDelta]
- * @param {(done:object)=>void} [handlers.onDone]
+ * @param {(done:object)=>void}    [handlers.onDone]
  * @param {(message:string)=>void} [handlers.onError]
+ * @param {(content:string)=>void} [handlers.onThinking]       agent mode — thinking block
+ * @param {(ev:object)=>void}      [handlers.onThinkingRetry]  agent mode — retry notification
  * @param {AbortSignal} [signal]
  * @param {string} [url] endpoint to POST to (defaults to /api/chat)
  * @returns {Promise<void>}
@@ -47,10 +49,12 @@ export async function streamChatRequest(payload, handlers = {}, signal, url = '/
       } catch {
         continue;
       }
-      if (evt.type === 'meta') handlers.onMeta?.(evt);
-      else if (evt.type === 'delta') handlers.onDelta?.(evt.content || '');
-      else if (evt.type === 'error') handlers.onError?.(evt.message || 'Inference error');
-      else if (evt.type === 'done') handlers.onDone?.(evt);
+      if      (evt.type === 'meta')            handlers.onMeta?.(evt);
+      else if (evt.type === 'delta')           handlers.onDelta?.(evt.content || '');
+      else if (evt.type === 'error')           handlers.onError?.(evt.message || 'Inference error');
+      else if (evt.type === 'done')            handlers.onDone?.(evt);
+      else if (evt.type === 'thinking')        handlers.onThinking?.(evt.content || '');
+      else if (evt.type === 'thinking_retry')  handlers.onThinkingRetry?.(evt);
     }
   }
 }

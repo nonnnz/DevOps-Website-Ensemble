@@ -64,7 +64,7 @@ export function clampGenParams(body = {}) {
   };
 }
 
-export const BACKENDS = ['auto', 'b200', 'lanta', 'local'];
+export const BACKENDS = ['auto', 'b200', 'lanta', 'local', 'modelharbor'];
 export const FEEDBACK_TYPES = ['good', 'bad', 'hallucination', 'unsafe'];
 export const MODEL_STATUSES = ['active', 'hidden', 'disabled'];
 export const MODEL_TYPES = ['base', 'instruct', 'chat'];

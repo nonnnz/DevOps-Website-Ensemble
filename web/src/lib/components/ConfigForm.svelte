@@ -18,7 +18,7 @@
   let errorMsg = '';
 
   const modes = ['mock', 'real'];
-  const backends = ['auto', 'b200', 'lanta'];
+  const backends = ['auto', 'b200', 'lanta', 'local', 'modelharbor'];
   const serverTypes = ['vLLM', 'TGI', 'Triton', 'Custom'];
 
   const flagFields = [

@@ -13,6 +13,7 @@ import { prisma, safeQuery } from '$lib/server/db.js';
 import { getApiConfig, resolveBackend, defaultModelId } from '$lib/server/config.js';
 import { now } from '$lib/server/metrics.js';
 import { oneOf } from '$lib/server/validate.js';
+import { assertSafeEndpoint } from '$lib/server/security.js';
 
 const TEST_TARGETS = ['b200', 'lanta', 'chat'];
 const SLOW_MS = 2000;
@@ -23,6 +24,7 @@ async function pingModels(baseUrl, apiKey, timeoutMs) {
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const startedAt = now();
   try {
+    assertSafeEndpoint(baseUrl);
     const res = await fetch(`${baseUrl}/v1/models`, {
       headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {},
       signal: controller.signal
@@ -45,6 +47,7 @@ async function pingChat(baseUrl, apiKey, model, timeoutMs) {
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const startedAt = now();
   try {
+    assertSafeEndpoint(baseUrl);
     const res = await fetch(`${baseUrl}/v1/chat/completions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}) },

@@ -16,6 +16,7 @@ import { error } from '@sveltejs/kit';
 import { prisma, safeQuery } from '$lib/server/db.js';
 import { getApiConfig, resolveBackend, defaultModelId } from '$lib/server/config.js';
 import { streamChat } from '$lib/server/llmClient.js';
+import { agentLoopStream } from '$lib/server/agentLoop.js';
 import {
   newRequestId,
   estimateInputTokens,
@@ -23,7 +24,7 @@ import {
   tokensPerSecond,
   now
 } from '$lib/server/metrics.js';
-import { clampGenParams, oneOf, asString, BACKENDS } from '$lib/server/validate.js';
+import { clampGenParams, oneOf, asString, BACKENDS, asBool } from '$lib/server/validate.js';
 
 const VALID_ROLES = ['system', 'user', 'assistant'];
 
@@ -50,6 +51,7 @@ export async function POST({ request }) {
   const resolved = resolveBackend(requestedBackend, cfg);
   const modelId = asString(body.model, 120) || defaultModelId();
   const params = clampGenParams(body);
+  const agentMode = asBool(body.agent_mode, false);
 
   const systemPrompt = messages.find((m) => m.role === 'system')?.content || null;
   const userPrompt = [...messages].reverse().find((m) => m.role === 'user')?.content || '';
@@ -77,21 +79,48 @@ export async function POST({ request }) {
       });
 
       try {
-        const generator = streamChat({
-          mode: resolved.mode,
-          userPrompt,
-          messages,
-          params,
-          baseUrl: resolved.baseUrl,
-          apiKey: resolved.apiKey,
-          model: modelId,
-          timeoutSeconds: resolved.timeoutSeconds
-        });
+        if (agentMode && resolved.mode === 'real') {
+          // Agentic loop: generator yields structured {type, content} objects
+          const generator = agentLoopStream({
+            apiStyle: resolved.apiStyle || 'chat',
+            baseUrl: resolved.baseUrl,
+            apiKey: resolved.apiKey,
+            model: modelId,
+            messages,
+            params,
+            timeoutSeconds: resolved.timeoutSeconds,
+            systemOverride: asString(body.system_override, 2000) || undefined
+          });
 
-        for await (const delta of generator) {
-          if (!delta) continue;
-          fullText += delta;
-          send({ type: 'delta', content: delta });
+          for await (const event of generator) {
+            if (event.type === 'delta') {
+              fullText += event.content;
+              send({ type: 'delta', content: event.content });
+            } else if (event.type === 'thinking') {
+              send({ type: 'thinking', content: event.content });
+            } else if (event.type === 'thinking_retry') {
+              send({ type: 'thinking_retry', iteration: event.iteration, reason: event.reason });
+            }
+          }
+        } else {
+          // Standard path
+          const generator = streamChat({
+            mode: resolved.mode,
+            apiStyle: resolved.apiStyle,
+            userPrompt,
+            messages,
+            params,
+            baseUrl: resolved.baseUrl,
+            apiKey: resolved.apiKey,
+            model: modelId,
+            timeoutSeconds: resolved.timeoutSeconds
+          });
+
+          for await (const delta of generator) {
+            if (!delta) continue;
+            fullText += delta;
+            send({ type: 'delta', content: delta });
+          }
         }
       } catch (err) {
         statusStr = 'error';

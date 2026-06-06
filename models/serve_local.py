@@ -49,12 +49,21 @@ async def lifespan(app: FastAPI):
     yield
 
 
+# The web app calls this server-side (SvelteKit backend → here), so browser CORS
+# is not needed. Restrict to localhost dev origins instead of a wildcard.
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://localhost:4173",
+]
+
 app = FastAPI(title="Local Thai LLM Server", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_methods=["POST", "GET", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 

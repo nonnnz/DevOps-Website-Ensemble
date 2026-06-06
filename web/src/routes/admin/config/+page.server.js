@@ -4,8 +4,9 @@ import { fallbackModels } from '$lib/data/models.js';
 
 /**
  * Admin config data loader.
- * TODO (security): this page has no auth yet. Before exposing publicly, guard it
- * in src/hooks.server.js (e.g. session / basic auth) for any /admin/* path.
+ * Auth is enforced in src/hooks.server.js — this loader only runs for requests
+ * that already passed the admin gate (valid ADMIN_TOKEN cookie/header, or dev
+ * with ADMIN_TOKEN unset).
  */
 export async function load() {
   const [apiConfig, featureFlags, models] = await Promise.all([
