@@ -1,0 +1,264 @@
+<meta charset="utf-8">
+<title>Thai LLM Eval — Leaderboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0f14; --panel:#12161e; --panel2:#171c26; --line:#232b39;
+    --txt:#e6edf6; --mut:#7e8aa0; --dim:#566077;
+    --ours:#4ade80; --base:#60a5fa; --warn:#fb7185; --good:#34d399; --bad:#f87171;
+    --grid:#1c2330; --accent:#a3e635;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans Thai','IBM Plex Mono',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:
+     radial-gradient(900px 500px at 85% -8%, #15212e 0%, transparent 60%),
+     var(--bg);
+    color:var(--txt);font-family:var(--sans);font-size:14px;line-height:1.5;
+    padding:22px;min-height:100vh}
+  .wrap{max-width:1180px;margin:0 auto}
+  header{display:flex;align-items:flex-end;justify-content:space-between;
+    border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+  h1{font-size:19px;margin:0;font-weight:700;letter-spacing:.2px}
+  h1 .tag{font-family:var(--mono);color:var(--ours);font-size:12px;
+    border:1px solid var(--ours);padding:2px 7px;border-radius:5px;margin-left:8px;vertical-align:middle}
+  .sub{color:var(--mut);font-size:12px;font-family:var(--mono);margin-top:4px}
+  .meta{font-family:var(--mono);font-size:11px;color:var(--dim);text-align:right}
+  .meta b{color:var(--mut);font-weight:500}
+
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}
+  .card .lbl{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px}
+  .card .val{font-family:var(--mono);font-size:26px;font-weight:600;margin-top:6px}
+  .card .note{font-family:var(--mono);font-size:11px;margin-top:3px;color:var(--dim)}
+  .up{color:var(--good)} .down{color:var(--bad)}
+
+  .grid2{display:grid;grid-template-columns:1.45fr 1fr;gap:14px;margin-bottom:14px}
+  @media(max-width:880px){.grid2{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+  .ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .ph h2{font-size:13px;margin:0;font-weight:600;letter-spacing:.3px;text-transform:uppercase;color:var(--txt)}
+  .ph .hint{font-family:var(--mono);font-size:11px;color:var(--dim)}
+
+  table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px}
+  th,td{padding:8px 6px;text-align:center;border-bottom:1px solid var(--grid)}
+  th{color:var(--mut);font-weight:500;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+  td.model{text-align:left;font-family:var(--sans);white-space:nowrap}
+  tr.ours td{background:linear-gradient(90deg,rgba(74,222,128,.10),transparent)}
+  tr.ours td.model{color:var(--ours);font-weight:600}
+  .ov{font-weight:600}
+  .rank{color:var(--dim);font-size:11px;margin-right:6px}
+  .cell{display:inline-block;min-width:34px}
+  .delta{font-size:10px;display:block;margin-top:1px}
+
+  select,button{font-family:var(--mono);font-size:11px;background:var(--panel2);
+    color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:5px 9px;cursor:pointer}
+  button.tg{margin-left:6px}
+  button.tg.on{border-color:var(--ours);color:var(--ours)}
+
+  .radar-wrap{display:flex;flex-direction:column;align-items:center}
+  .legend{display:flex;gap:16px;font-family:var(--mono);font-size:11px;margin-top:6px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:9px;height:9px;border-radius:2px;display:inline-block}
+
+  .bars .row{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:10px;margin-bottom:9px}
+  .bars .bname{font-family:var(--mono);font-size:11px;color:var(--mut);text-align:right}
+  .track{position:relative;height:22px;background:var(--panel2);border-radius:5px;overflow:hidden}
+  .fill{position:absolute;top:0;left:0;height:100%;display:flex;align-items:center;padding-left:8px;
+    font-family:var(--mono);font-size:11px;color:#04140a;font-weight:600;border-radius:5px;
+    transition:width .5s ease}
+  .fill.ours{background:linear-gradient(90deg,var(--ours),#22c55e)}
+  .fill.base{background:linear-gradient(90deg,var(--base),#3b82f6);color:#06121f}
+  .grp{margin-bottom:14px}
+  .grp .gt{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px}
+
+  .foot{color:var(--dim);font-family:var(--mono);font-size:11px;margin-top:8px;line-height:1.7}
+  .pill{display:inline-block;font-family:var(--mono);font-size:10px;padding:1px 6px;border:1px solid var(--line);border-radius:4px;color:var(--mut);margin-left:6px}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Thai&nbsp;LLM&nbsp;Eval<span class="tag">baseline run</span></h1>
+      <div class="sub">Qwen-Thai-SFT vs Thai baselines &nbsp;·&nbsp; 8 capability axes &nbsp;·&nbsp; normalized 0–100</div>
+    </div>
+    <div class="meta">
+      <div><b>run_id</b> 2026-06-07_a1 · <b>seed</b> 42 · <b>shots</b> 5</div>
+      <div><b>judge</b> gpt-4o-2024-11 · <b>serve</b> vLLM · <b>harness</b> lm-eval+inspect</div>
+    </div>
+  </header>
+
+  <div class="cards" id="cards"></div>
+
+  <div class="grid2">
+    <div class="panel">
+      <div class="ph">
+        <h2>Leaderboard</h2>
+        <div>
+          <span class="hint">เทียบกับ base:</span>
+          <button class="tg" id="deltaBtn">Δ vs Qwen-base: OFF</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto"><table id="lb"></table></div>
+      <div class="foot">เซลล์สีเขียวเข้ม = แถวโมเดลเรา · เปิด Δ เพื่อดูว่า fine-tune ตัวไหน <span class="up">ดีขึ้น</span>/<span class="down">ถอย</span> จาก base</div>
+    </div>
+
+    <div class="panel radar-wrap">
+      <div class="ph" style="width:100%">
+        <h2>Capability Radar</h2>
+        <select id="cmp"></select>
+      </div>
+      <svg id="radar" viewBox="0 0 320 300" width="320" height="300"></svg>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--ours)"></i>Qwen-Thai-SFT</span>
+        <span><i class="dot" style="background:var(--base)"></i><span id="cmpName">baseline</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <div class="ph">
+        <h2>Breakdown ราย benchmark</h2>
+        <select id="axisSel"></select>
+      </div>
+      <div class="bars" id="bars"></div>
+      <div class="foot" id="barNote"></div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><h2>ThaiSafetyBench · ราย category</h2><span class="hint">% safe response</span></div>
+      <div class="bars" id="safety"></div>
+      <div class="foot">วัด safety ต้องดูราย harm category ไม่ใช่ตัวเลขรวม — บางหมวดถอยได้จาก fine-tune</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- sample data (normalized 0-100). raw = หน่วยจริงของ metric นั้น ----
+const AXES = [
+  {k:"exam",  name:"Exam (MCQ)",   raw:"accuracy %",  bench:[["thai_exam",0],["openthaieval",0],["onet",0]]},
+  {k:"math",  name:"Math",         raw:"exact-match %",bench:[["mgsm-th",0]]},
+  {k:"inst",  name:"Instruct",     raw:"IFEval acc %", bench:[["IFEval strict",0],["IFEval loose",0]]},
+  {k:"chat",  name:"Chat/Gen",     raw:"judge 1–10→%", bench:[["MT-Bench",0],["ThaiCLI",0]]},
+  {k:"trans", name:"Translate",    raw:"COMET→%",      bench:[["en→th",0],["th→en",0]]},
+  {k:"nlu",   name:"NLU",          raw:"macro-F1→%",   bench:[["Sentiment",0]]},
+  {k:"legal", name:"Legal RAG",    raw:"nitibench joint→%",bench:[["CCL",0],["Tax",0]]},
+  {k:"safe",  name:"Safety",       raw:"% safe",       bench:[["ThaiSafetyBench",0]]},
+];
+// scores[model] = {axis: normScore, _bench:{axisk:[v1,v2..]}}
+const MODELS = [
+  {id:"Qwen-Thai-SFT", ours:true,  s:[71,58,74,68,82,79,55,91],
+     b:{exam:[73,72,68],math:[58],inst:[78,71],chat:[64,72],trans:[83,81],nlu:[79],legal:[60,50],safe:[91]}},
+  {id:"Qwen2.5-7B (base)", base:true, s:[64,55,66,55,80,74,41,84],
+     b:{exam:[66,64,62],math:[55],inst:[70,63],chat:[51,59],trans:[81,79],nlu:[74],legal:[46,36],safe:[84]}},
+  {id:"Typhoon2-8B", s:[74,56,70,71,78,80,58,93],
+     b:{exam:[76,74,72],math:[56],inst:[74,67],chat:[68,74],trans:[79,77],nlu:[80],legal:[63,53],safe:[93]}},
+  {id:"OpenThaiGPT-7B", s:[66,47,61,60,75,77,49,88],
+     b:{exam:[68,66,64],math:[47],inst:[65,58],chat:[57,63],trans:[76,74],nlu:[77],legal:[54,44],safe:[88]}},
+  {id:"Sailor2-8B", s:[69,60,67,63,84,76,52,86],
+     b:{exam:[71,69,67],math:[60],inst:[71,64],chat:[59,67],trans:[85,83],nlu:[76],legal:[57,47],safe:[86]}},
+];
+const SAFETY_CATS=[["Hate/Harassment",94,88],["Self-harm",96,90],["Illegal",92,83],
+  ["Sexual",89,80],["Misinformation",85,79],["Privacy",90,84]]; // [cat, ours, base]
+
+const A=AXES, getOurs=()=>MODELS.find(m=>m.ours), getBase=()=>MODELS.find(m=>m.base);
+const overall=m=>Math.round(m.s.reduce((a,b)=>a+b,0)/m.s.length);
+const col=v=>v>=80?"var(--good)":v>=65?"var(--accent)":v>=50?"#facc15":"var(--warn)";
+
+// ---- summary cards ----
+function cards(){
+  const o=getOurs(),b=getBase(),ov=overall(o),d=ov-overall(b);
+  let reg=0,bestI=0,worstI=0;
+  o.s.forEach((v,i)=>{ if(v<b.s[i])reg++; if(v>o.s[bestI])bestI=i; if(v<o.s[worstI])worstI=i;});
+  const C=[
+    ["Overall (ours)",ov,`เฉลี่ย 8 แกน · <span class="${d>=0?'up':'down'}">${d>=0?'+':''}${d} vs base</span>`],
+    ["แกนแข็งสุด",o.s[bestI],`${A[bestI].name}`],
+    ["แกนอ่อนสุด",o.s[worstI],`${A[worstI].name} — ควรเก็บงานต่อ`],
+    ["Regressions",reg,`แกนที่ <span class="down">ถอย</span>จาก base (จาก 8)`],
+  ];
+  document.getElementById('cards').innerHTML=C.map(c=>
+    `<div class="card"><div class="lbl">${c[0]}</div>
+     <div class="val" style="color:${typeof c[1]==='number'&&c[0]!=='Regressions'?col(c[1]):'var(--txt)'}">${c[1]}</div>
+     <div class="note">${c[2]}</div></div>`).join('');
+}
+
+// ---- leaderboard ----
+let showDelta=false;
+function lb(){
+  const base=getBase();
+  let h="<tr><th class='model' style='text-align:left'>Model</th>"+
+    A.map(a=>`<th>${a.name.split(' ')[0]}</th>`).join('')+"<th>Overall</th></tr>";
+  const ranked=[...MODELS].sort((x,y)=>overall(y)-overall(x));
+  ranked.forEach((m,ri)=>{
+    h+=`<tr class="${m.ours?'ours':''}"><td class="model"><span class="rank">${ri+1}</span>${m.id}</td>`;
+    m.s.forEach((v,i)=>{
+      let inner=`<span class="cell" style="color:${col(v)}">${v}</span>`;
+      if(showDelta&&!m.base){const dd=v-base.s[i];
+        inner+=`<span class="delta ${dd>=0?'up':'down'}">${dd>=0?'+':''}${dd}</span>`;}
+      h+=`<td>${inner}</td>`;
+    });
+    h+=`<td class="ov" style="color:${col(overall(m))}">${overall(m)}</td></tr>`;
+  });
+  document.getElementById('lb').innerHTML=h;
+}
+document.getElementById('deltaBtn').onclick=function(){
+  showDelta=!showDelta;this.classList.toggle('on',showDelta);
+  this.textContent="Δ vs Qwen-base: "+(showDelta?"ON":"OFF");lb();};
+
+// ---- radar ----
+function radar(){
+  const o=getOurs(),cid=document.getElementById('cmp').value,c=MODELS.find(m=>m.id===cid);
+  document.getElementById('cmpName').textContent=c.id;
+  const cx=160,cy=150,R=110,N=A.length,svg=document.getElementById('radar');
+  let s="";
+  for(let r=25;r<=100;r+=25){const pts=A.map((a,i)=>{const ang=-Math.PI/2+i*2*Math.PI/N;
+    return (cx+Math.cos(ang)*R*r/100)+","+(cy+Math.sin(ang)*R*r/100);}).join(' ');
+    s+=`<polygon points="${pts}" fill="none" stroke="var(--grid)" stroke-width="1"/>`;}
+  A.forEach((a,i)=>{const ang=-Math.PI/2+i*2*Math.PI/N,x=cx+Math.cos(ang)*R,y=cy+Math.sin(ang)*R;
+    s+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--grid)"/>`;
+    const lx=cx+Math.cos(ang)*(R+20),ly=cy+Math.sin(ang)*(R+16);
+    s+=`<text x="${lx}" y="${ly}" fill="var(--mut)" font-size="9" font-family="var(--mono)" text-anchor="middle">${a.name.split(' ')[0]}</text>`;});
+  const poly=(m,fill,stroke)=>{const pts=m.s.map((v,i)=>{const ang=-Math.PI/2+i*2*Math.PI/N;
+    return (cx+Math.cos(ang)*R*v/100)+","+(cy+Math.sin(ang)*R*v/100);}).join(' ');
+    return `<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;};
+  s+=poly(c,"rgba(96,165,250,.12)","var(--base)");
+  s+=poly(o,"rgba(74,222,128,.18)","var(--ours)");
+  svg.innerHTML=s;
+}
+
+// ---- breakdown bars ----
+function bars(){
+  const ax=document.getElementById('axisSel').value,a=A.find(x=>x.k===ax);
+  const o=getOurs(),b=getBase();
+  document.getElementById('barNote').innerHTML=`metric จริง: <b style="color:var(--mut)">${a.raw}</b> · normalize เป็น 0–100 เพื่อเทียบข้ามแกน (เก็บค่าดิบใน log)`;
+  let h="";
+  a.bench.forEach((bn,i)=>{
+    const ov=o.b[ax][i],bv=b.b[ax][i];
+    h+=`<div class="grp"><div class="gt">${bn[0]}</div>
+      <div class="row"><div class="bname">SFT</div><div class="track"><div class="fill ours" style="width:${ov}%">${ov}</div></div></div>
+      <div class="row"><div class="bname">base</div><div class="track"><div class="fill base" style="width:${bv}%">${bv}</div></div></div></div>`;
+  });
+  document.getElementById('bars').innerHTML=h;
+}
+
+// ---- safety cats ----
+function safety(){
+  document.getElementById('safety').innerHTML=SAFETY_CATS.map(c=>{
+    const dd=c[1]-c[2];
+    return `<div class="grp"><div class="gt">${c[0]} <span class="${dd>=0?'up':'down'}" style="font-family:var(--mono)">${dd>=0?'+':''}${dd}</span></div>
+     <div class="row"><div class="bname">SFT</div><div class="track"><div class="fill ours" style="width:${c[1]}%">${c[1]}</div></div></div>
+     <div class="row"><div class="bname">base</div><div class="track"><div class="fill base" style="width:${c[2]}%">${c[2]}</div></div></div></div>`;
+  }).join('');
+}
+
+// ---- init selects ----
+document.getElementById('cmp').innerHTML=MODELS.filter(m=>!m.ours)
+  .map(m=>`<option ${m.base?'selected':''}>${m.id}</option>`).join('');
+document.getElementById('axisSel').innerHTML=A.map(a=>`<option value="${a.k}">${a.name}</option>`).join('');
+document.getElementById('cmp').onchange=radar;
+document.getElementById('axisSel').onchange=bars;
+
+cards();lb();radar();bars();safety();
+</script>

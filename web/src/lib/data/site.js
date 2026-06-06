@@ -27,7 +27,8 @@ export const navLinks = [
   { label: 'Model', href: '/model' },
   { label: 'Evaluation', href: '/evaluation' },
   { label: 'Research', href: '/research' },
-  { label: 'Doc', href: '/docs' }
+  { label: 'Doc', href: '/docs' },
+  { label: 'AutoFollowDown', href: '/autofollowdown' }
 ];
 
 /** Status pills shown around the hero mascot. */

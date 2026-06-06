@@ -25,7 +25,9 @@
   /** @type {Array<{role:string, content:string, logId?:string|null}>} */
   let messages = [];
   let model = defaultModel;
-  let backend = defaultBackend;
+  // Default to Auto (mock, always works); SuperAI is selectable once its
+  // upstream server is healthy. SuperAI routes to /api/superai, others to /api/chat.
+  let backend = 'auto';
   let isStreaming = false;
   let errorMsg = '';
   let metrics = null;
@@ -41,10 +43,16 @@
   };
 
   const backends = [
+    { value: 'superai', label: 'SuperAI (live)' },
     { value: 'auto', label: 'Auto' },
     { value: 'b200', label: 'B200' },
     { value: 'lanta', label: 'LANTA' }
   ];
+
+  // The hosted SuperAI model. Selecting it (or backend 'superai') routes the
+  // request to /api/superai, which calls https://spaiss6.pangpuriye.info/api/infer.
+  const SUPERAI_MODEL = 'Wenwu190200201/spaiss6';
+  $: endpoint = backend === 'superai' || model === SUPERAI_MODEL ? '/api/superai' : '/api/chat';
 
   $: activeModels = models.filter((m) => m.status !== 'disabled');
 
@@ -108,7 +116,8 @@
           errorMsg = message;
         }
       },
-      controller.signal
+      controller.signal,
+      endpoint
     ).catch((err) => {
       if (err?.name !== 'AbortError') errorMsg = err?.message || 'Request failed';
     });
@@ -145,6 +154,7 @@
       <label class="flex items-center gap-2 text-xs text-textmuted">
         Model
         <select bind:value={model} class="input-soft !w-auto py-1.5 text-sm">
+          <option value={SUPERAI_MODEL}>Wenwu190200201/spaiss6 (SuperAI live)</option>
           {#each activeModels as m}
             <option value={m.model_id}>{m.display_name}</option>
           {/each}

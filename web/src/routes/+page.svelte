@@ -2,12 +2,14 @@
   import Button from '$lib/components/Button.svelte';
   import SectionHeader from '$lib/components/SectionHeader.svelte';
   import MascotStage from '$lib/components/MascotStage.svelte';
+  import FuturisticBackground from '$lib/components/FuturisticBackground.svelte';
   import MetricCard from '$lib/components/MetricCard.svelte';
   import GalleryImageCard from '$lib/components/GalleryImageCard.svelte';
   import { site } from '$lib/data/site.js';
   import { modelHighlights, evalSnapshot } from '$lib/data/home.js';
   import { galleryImages } from '$lib/data/gallery.js';
   import { researchCards } from '$lib/data/research.js';
+  import { reveal } from '$lib/utils/reveal.js';
 
   const heroSnippet = `from openai import OpenAI
 
@@ -24,7 +26,23 @@ response = client.chat.completions.create(
 
   $: mascotMode = data?.flags?.enable_webgl_mascot === false ? 'placeholder' : 'spline';
 
-  const sponsorLogos = ['Logo 1', 'Logo 2', 'Logo 3', 'Logo 4', 'Logo 5', 'Logo 6'];
+  const sponsorLogos = [
+    { src: '/sponsors/aiat.png', name: 'AIAT' },
+    { src: '/sponsors/nectec.png', name: 'NECTEC' },
+    { src: '/sponsors/ministerssci.png', name: 'MHESI' },
+    { src: '/sponsors/pmub.png', name: 'PMU-B' },
+    { src: '/sponsors/siit.png', name: 'SIIT' },
+    { src: '/sponsors/rmutl.png', name: 'RMUTL' },
+    { src: '/sponsors/ailoveu.png', name: 'AI LOVE U' },
+    { src: '/sponsors/rwp.png', name: 'RWP' },
+    { src: '/sponsors/sksw.png', name: 'SKSW' }
+  ];
+  const mascotMessages = [
+    'สวัสดี คนไทย 👋',
+    'ลองเล่น Playground กันไหม?',
+    'ถามอะไรก็ได้เลยครับ',
+    'Thai LLM • built from scratch'
+  ];
   const communityChannels = [
     { title: 'Discord', desc: 'Chat with the team and community in real time.', href: site.links.discord, cta: 'Join Discord' },
     { title: 'GitHub', desc: 'Source code, issues, and pull requests.', href: site.links.github, cta: 'Open GitHub' },
@@ -44,29 +62,31 @@ response = client.chat.completions.create(
 </svelte:head>
 
 <!-- HERO -->
-<section class="section pt-0 sm:pt-0">
-  <div class="container-app grid items-center gap-12 lg:grid-cols-2">
+<section class="section relative overflow-hidden pt-28 sm:pt-32 lg:pt-24">
+  <FuturisticBackground />
+  <div class="container-app relative z-10 grid items-center gap-12 lg:grid-cols-2">
     <div>
-      <span class="eyebrow mb-5">Super AI Engineer LLM</span>
-      <h1 class="text-4xl font-extrabold leading-tight text-textmain sm:text-5xl lg:text-6xl text-balance">
+      <span class="eyebrow mb-5 rise">Super AI Engineer LLM</span>
+      <h1 class="rise text-4xl font-extrabold leading-tight text-textmain sm:text-5xl lg:text-6xl text-balance" style="animation-delay:.08s">
         Super AI Engineer<br />LLM
       </h1>
-      <p class="mt-5 max-w-xl text-lg leading-relaxed text-textmuted">
+      <p class="rise mt-5 max-w-xl text-lg leading-relaxed text-textmuted" style="animation-delay:.16s">
         {site.description}
       </p>
-      <div class="mt-8 flex flex-wrap gap-3">
+      <div class="rise mt-8 flex flex-wrap gap-3" style="animation-delay:.24s">
         <Button href="/playground" size="lg">Playground</Button>
         <Button href="/docs" size="lg" variant="outline">View Doc</Button>
       </div>
     </div>
 
-    <div class="relative">
+    <div class="rise relative" style="animation-delay:.2s">
       <MascotStage
         mode={mascotMode}
         splineUrl={site.mascot.splineUrl}
         src="/models/mascot.glb"
         autoRotate
         interactive
+        messages={mascotMessages}
         pills={[]}
         framed={false}
       />
@@ -75,7 +95,7 @@ response = client.chat.completions.create(
 </section>
 
 <!-- MODEL HIGHLIGHTS -->
-<section class="section">
+<section class="section" use:reveal>
   <div class="container-app">
     <SectionHeader
       eyebrow="Why this model"
@@ -100,7 +120,7 @@ response = client.chat.completions.create(
 </section>
 
 <!-- EVALUATION SNAPSHOT -->
-<section class="section">
+<section class="section" use:reveal>
   <div class="container-app">
     <SectionHeader eyebrow="Evaluation snapshot" title="Quality and serving at a glance">
       <div class="mt-4"><Button href="/evaluation" variant="outline" size="sm">See full evaluation</Button></div>
@@ -120,7 +140,7 @@ response = client.chat.completions.create(
 </section>
 
 <!-- RESEARCH & DOCS PREVIEW -->
-<section class="section">
+<section class="section" use:reveal>
   <div class="container-app grid gap-6 lg:grid-cols-2">
     <div class="card-soft p-8">
       <span class="eyebrow mb-4">Research</span>
@@ -144,7 +164,7 @@ response = client.chat.completions.create(
 </section>
 
 <!-- GALLERY -->
-<section class="section">
+<section class="section" use:reveal>
   <div class="container-app">
     <SectionHeader
       eyebrow="Gallery"
@@ -161,7 +181,7 @@ response = client.chat.completions.create(
 </section>
 
 <!-- SPONSORS -->
-<section class="section">
+<section class="section" use:reveal>
   <div class="container-app">
     <SectionHeader
       eyebrow="Sponsors"
@@ -169,10 +189,16 @@ response = client.chat.completions.create(
       subtitle="A clean logo strip for organizations supporting Super AI Engineer LLM."
       center
     />
-    <div class="card-soft grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-6">
+    <div class="card-soft grid grid-cols-2 gap-4 p-6 sm:grid-cols-3">
       {#each sponsorLogos as logo}
-        <div class="flex h-16 items-center justify-center rounded-xl bg-surface text-sm font-semibold text-textmuted">
-          {logo}
+        <div class="flex h-24 items-center justify-center rounded-xl bg-surface/60 p-4">
+          <img
+            src={logo.src}
+            alt={logo.name}
+            title={logo.name}
+            loading="lazy"
+            class="logo-img max-h-16 max-w-[82%] object-contain"
+          />
         </div>
       {/each}
     </div>
@@ -180,7 +206,7 @@ response = client.chat.completions.create(
 </section>
 
 <!-- COMMUNITY -->
-<section class="section">
+<section class="section" use:reveal>
   <div class="container-app">
     <SectionHeader
       eyebrow="Community"
