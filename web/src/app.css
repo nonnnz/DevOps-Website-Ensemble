@@ -149,6 +149,11 @@
   }
 }
 
+/* Alternating section tint — creates rhythm between page sections */
+.section-tinted {
+  background: linear-gradient(180deg, #F3F8FF 0%, #FAFCFF 100%);
+}
+
 /* Respect users who prefer reduced motion (mascot float, transitions, etc.) */
 @media (prefers-reduced-motion: reduce) {
   *,
