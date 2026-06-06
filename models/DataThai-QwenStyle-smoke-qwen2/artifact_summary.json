@@ -1,0 +1,15 @@
+{
+  "artifact_dir": "/content/datathai-deploy/DataThai-QwenStyle-smoke-qwen2",
+  "repo_id": "SPAISS6F1/DataThai-QwenStyle-smoke",
+  "size": "smoke",
+  "arch": "qwen2",
+  "parameters": 902144,
+  "status": "tiny smoke-trained",
+  "safetensors": [
+    "model.safetensors"
+  ],
+  "index_files": [],
+  "name": "DataThai-1M-playground-improved",
+  "note": "Improved tiny playable smoke model, not a real 1B LLM.",
+  "recommended_repo_name": "DataThai-1M-playground-improved"
+}

@@ -1,0 +1,5 @@
+ภาษาไทยเป็นภาษาที่สวยงามและมีเอกลักษณ์ DataThai-1B is a Thai-first English-capable LLM.
+การสร้างโมเดลภาษา from scratch ต้องมี tokenizer, data cleaning, pretraining, evaluation, and safety tuning.
+Transformers use attention, RoPE, RMSNorm, and SwiGLU to model long-range dependencies.
+ตัวอย่างโจทย์: ถ้า x = 3 และ y = 5 แล้ว x*y + 2 เท่ากับ 17
+def add(a, b): return a + b  # ฟังก์ชันบวกเลขสองจำนวน
