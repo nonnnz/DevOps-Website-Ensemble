@@ -34,10 +34,10 @@ response = client.chat.completions.create(
 
   // ── Community channel icons + badge colours ───────────────────────────────
   const channelMeta = {
-    Discord:        { path: `<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linejoin="round"/>`,                                                                                             badge: 'bg-violet-100 text-violet-600' },
-    GitHub:         { path: `<path d="M16 18l6-6-6-6M8 6L2 12l6 6" stroke-linecap="round" stroke-linejoin="round"/>`,                                                                                                          badge: 'bg-slate-100 text-slate-600'  },
-    'Hugging Face': { path: `<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke-linecap="round"/><circle cx="9.5" cy="9.5" r="0.8" fill="currentColor" stroke="none"/><circle cx="14.5" cy="9.5" r="0.8" fill="currentColor" stroke="none"/>`, badge: 'bg-amber-100 text-amber-600'  },
-    X:              { path: `<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/>`,                                                                                                 badge: 'bg-sky-100  text-sky-600'     },
+    Discord:        { path: `<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linejoin="round"/>`,                                                                                             badge: 'bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-400' },
+    GitHub:         { path: `<path d="M16 18l6-6-6-6M8 6L2 12l6 6" stroke-linecap="round" stroke-linejoin="round"/>`,                                                                                                          badge: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'        },
+    'Hugging Face': { path: `<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke-linecap="round"/><circle cx="9.5" cy="9.5" r="0.8" fill="currentColor" stroke="none"/><circle cx="14.5" cy="9.5" r="0.8" fill="currentColor" stroke="none"/>`, badge: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'        },
+    X:              { path: `<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/>`,                                                                                                 badge: 'bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-400'             },
   };
 
   const sponsorLogos = ['Logo 1', 'Logo 2', 'Logo 3', 'Logo 4', 'Logo 5', 'Logo 6'];
@@ -58,7 +58,7 @@ response = client.chat.completions.create(
 </script>
 
 <svelte:head>
-  <title>Super AI Engineer LLM</title>
+  <title>Aksorn-LM</title>
 </svelte:head>
 
 <!-- ── HERO ─────────────────────────────────────────────────────────────── -->
@@ -69,17 +69,20 @@ response = client.chat.completions.create(
   <div class="container-app relative z-20 grid items-center gap-12 lg:grid-cols-2 py-16 sm:py-20">
     <div>
       <span class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary-soft px-3 py-1 text-xs font-semibold text-primary dark:border-white/20 dark:bg-white/10 dark:text-cyan-300 backdrop-blur-sm mb-5">
-        Super AI Engineer LLM
+        Aksorn-LM
       </span>
       <h1 class="text-4xl font-extrabold leading-tight text-slate-900 dark:text-white sm:text-5xl lg:text-6xl text-balance">
-        Super AI Engineer<br />LLM
+        Aksorn-LM
       </h1>
+      <p class="mt-1 text-xl font-semibold tracking-wide text-slate-400 dark:text-blue-200/50 sm:text-2xl lg:text-3xl">
+        Super AI Engineer LLM
+      </p>
       <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-600 dark:text-blue-100/80">
         {site.description}
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
         <Button href="/playground" size="lg">Playground</Button>
-        <Button href="/docs" size="lg" variant="outline" class="dark:border-white/25 dark:bg-white/8 dark:text-white dark:hover:bg-white/15">View Doc</Button>
+        <Button href="/docs" size="lg" variant="outline" class="border-primary/30 bg-white/70 text-primary backdrop-blur-sm hover:bg-primary-soft dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/15">View Doc</Button>
       </div>
     </div>
 
@@ -102,13 +105,13 @@ response = client.chat.completions.create(
     <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {#each modelHighlights as h}
         <div class="card-soft card-hover p-6 flex flex-col">
-          <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary ring-1 ring-primary/10">
+          <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary ring-1 ring-primary/10 dark:bg-primary/20 dark:ring-primary/30 dark:text-cyan-300">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
               {@html highlightIcons[h.icon] ?? highlightIcons.bolt}
             </svg>
           </div>
-          <h3 class="text-base font-bold text-textmain">{h.title}</h3>
-          <p class="mt-2 flex-1 text-sm leading-relaxed text-textmuted">{h.description}</p>
+          <h3 class="text-base font-bold text-textmain dark:text-white">{h.title}</h3>
+          <p class="mt-2 flex-1 text-sm leading-relaxed text-textmuted dark:text-slate-400">{h.description}</p>
         </div>
       {/each}
     </div>
@@ -134,11 +137,11 @@ response = client.chat.completions.create(
   <div class="container-app grid gap-6 lg:grid-cols-2">
     <div class="card-soft p-8 flex flex-col">
       <span class="eyebrow mb-4">Research</span>
-      <h3 class="text-2xl font-bold text-textmain">Open research and technical reports</h3>
-      <p class="mt-2 text-textmuted">From tokenizer design to serving infrastructure, built transparently.</p>
+      <h3 class="text-2xl font-bold text-textmain dark:text-white">Open research and technical reports</h3>
+      <p class="mt-2 text-textmuted dark:text-slate-400">From tokenizer design to serving infrastructure, built transparently.</p>
       <ul class="mt-5 flex-1 space-y-3 text-sm">
         {#each researchCards.slice(0, 4) as r}
-          <li class="flex items-start gap-2 text-textmain">
+          <li class="flex items-start gap-2 text-textmain dark:text-slate-200">
             <svg viewBox="0 0 24 24" class="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -151,8 +154,8 @@ response = client.chat.completions.create(
 
     <div class="card-soft p-8 flex flex-col">
       <span class="eyebrow mb-4">Doc</span>
-      <h3 class="text-2xl font-bold text-textmain">Start building in minutes</h3>
-      <p class="mt-2 text-textmuted">A familiar API shape for teams that need fast integration.</p>
+      <h3 class="text-2xl font-bold text-textmain dark:text-white">Start building in minutes</h3>
+      <p class="mt-2 text-textmuted dark:text-slate-400">A familiar API shape for teams that need fast integration.</p>
       <pre class="scrollbar-thin mt-5 flex-1 overflow-x-auto rounded-xl bg-[#0A1E3C] p-4 text-xs text-blue-100 leading-relaxed"><code>{heroSnippet}</code></pre>
       <div class="mt-6"><Button href="/docs" variant="secondary" size="sm">Read the doc</Button></div>
     </div>
@@ -182,12 +185,12 @@ response = client.chat.completions.create(
     <SectionHeader
       eyebrow="Sponsors"
       title="Partner logos"
-      subtitle="A clean logo strip for organizations supporting Super AI Engineer LLM."
+      subtitle="A clean logo strip for organizations supporting Aksorn-LM."
       center
     />
     <div class="card-soft grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-6">
       {#each sponsorLogos as _, i}
-        <div class="flex h-16 items-center justify-center rounded-xl bg-gradient-to-br from-primary-soft via-white to-[#E6F0FF] border border-primary/10">
+        <div class="flex h-16 items-center justify-center rounded-xl bg-gradient-to-br from-primary-soft via-white to-[#E6F0FF] border border-primary/10 dark:from-primary/10 dark:via-slate-900 dark:to-slate-800/50 dark:border-white/10">
           <div class="flex flex-col items-center gap-1.5 opacity-40">
             <div class="h-2.5 rounded-full bg-primary" style="width:{2.5 + (i % 3) * 0.75}rem"></div>
             <div class="h-1.5 rounded-full bg-primary/70" style="width:{1.2 + (i % 2) * 0.6}rem"></div>
@@ -204,7 +207,7 @@ response = client.chat.completions.create(
     <SectionHeader
       eyebrow="Community"
       title="Get involved"
-      subtitle="Join the Super AI Engineer LLM community and help shape the next Thai-first AI platform."
+      subtitle="Join the Aksorn-LM community and help shape the next Thai-first AI platform."
       center
     />
 
@@ -217,9 +220,9 @@ response = client.chat.completions.create(
               {@html meta.path}
             </svg>
           </div>
-          <h3 class="text-lg font-bold text-textmain">{channel.title}</h3>
-          <p class="mt-2 flex-1 text-sm leading-relaxed text-textmuted">{channel.desc}</p>
-          <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">
+          <h3 class="text-lg font-bold text-textmain dark:text-white">{channel.title}</h3>
+          <p class="mt-2 flex-1 text-sm leading-relaxed text-textmuted dark:text-slate-400">{channel.desc}</p>
+          <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary dark:text-cyan-300">
             {channel.cta}
             <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -232,14 +235,14 @@ response = client.chat.completions.create(
     <div class="mt-10 grid gap-5 sm:grid-cols-2">
       {#each contributionLinks as item}
         <a href={item.href} class="card-soft card-hover flex items-start gap-4 p-6">
-          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary dark:bg-primary/20 dark:text-cyan-300">
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
           <div>
-            <h3 class="font-bold text-textmain">{item.title}</h3>
-            <p class="mt-1 text-sm leading-relaxed text-textmuted">{item.desc}</p>
+            <h3 class="font-bold text-textmain dark:text-white">{item.title}</h3>
+            <p class="mt-1 text-sm leading-relaxed text-textmuted dark:text-slate-400">{item.desc}</p>
           </div>
         </a>
       {/each}

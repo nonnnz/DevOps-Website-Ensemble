@@ -14,7 +14,7 @@
     height: 0;
   }
   body {
-    @apply w-full overflow-x-hidden bg-white font-sans text-textmain antialiased;
+    @apply w-full overflow-x-hidden bg-white dark:bg-[#030914] font-sans text-textmain antialiased;
     min-width: 0;
     scrollbar-width: none;
   }
@@ -42,10 +42,10 @@
     @apply py-16 sm:py-20;
   }
   .card-soft {
-    @apply rounded-2xl border border-bordersoft bg-white shadow-card;
+    @apply rounded-2xl border border-bordersoft bg-white shadow-card dark:bg-slate-900 dark:border-white/10 dark:shadow-none;
   }
   .card-hover {
-    @apply transition duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-soft;
+    @apply transition duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-soft dark:hover:border-white/20;
   }
   .badge {
     @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium;
@@ -57,10 +57,10 @@
     @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-textmuted;
   }
   .link-muted {
-    @apply text-textmuted transition hover:text-primary;
+    @apply text-textmuted transition hover:text-primary dark:text-slate-400 dark:hover:text-white;
   }
   .eyebrow {
-    @apply inline-flex items-center gap-2 rounded-full border border-bordersoft bg-primary-soft px-3 py-1 text-xs font-semibold text-primary;
+    @apply inline-flex items-center gap-2 rounded-full border border-bordersoft bg-primary-soft px-3 py-1 text-xs font-semibold text-primary dark:border-white/10 dark:bg-primary/20 dark:text-cyan-300;
   }
   .prose-clean p {
     @apply leading-relaxed text-textmuted;
@@ -119,13 +119,27 @@
   }
 }
 
+/* Page wrapper — dark mode strips the light radial blobs */
+@media (prefers-color-scheme: dark) {
+  .gradient-page {
+    background: #030914;
+  }
+  .gradient-stage {
+    background: linear-gradient(160deg, #0a1628 0%, #0d1f3c 55%, #102040 100%);
+  }
+  /* Surface token has no dark variant in the config — swap it globally */
+  .bg-surface {
+    background-color: rgba(15, 23, 42, 0.55);
+  }
+}
+
 /* Hero fade — blends animated bg into page background */
 .hero-fade {
-  background: linear-gradient(to bottom, transparent, #ffffff);
+  background: linear-gradient(to bottom, transparent 0%, #ffffff 100%);
 }
 @media (prefers-color-scheme: dark) {
   .hero-fade {
-    background: linear-gradient(to bottom, transparent, #030914);
+    background: linear-gradient(to bottom, transparent 0%, #030914 100%);
   }
 }
 
@@ -149,9 +163,14 @@
   }
 }
 
-/* Alternating section tint — creates rhythm between page sections */
+/* Section tint — very subtle rhythm layer, transparent in dark */
 .section-tinted {
-  background: linear-gradient(180deg, #F3F8FF 0%, #FAFCFF 100%);
+  background: linear-gradient(180deg, #f4f8ff 0%, #ffffff 100%);
+}
+@media (prefers-color-scheme: dark) {
+  .section-tinted {
+    background: transparent;
+  }
 }
 
 /* Respect users who prefer reduced motion (mascot float, transitions, etc.) */

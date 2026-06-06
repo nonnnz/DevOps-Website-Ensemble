@@ -16,11 +16,11 @@
   export { className as class };
 
   const variants = {
-    primary: 'bg-primary text-white hover:bg-primary-deep shadow-soft',
-    secondary: 'bg-primary-soft text-primary hover:bg-[#dceaff]',
-    outline: 'border border-bordersoft bg-white text-textmain hover:border-primary hover:text-primary',
-    ghost: 'text-textmuted hover:text-primary hover:bg-primary-soft',
-    danger: 'bg-danger text-white hover:bg-red-600'
+    primary:   'bg-primary text-white hover:bg-primary-deep shadow-soft',
+    secondary: 'bg-primary-soft text-primary hover:bg-[#dceaff] dark:bg-primary/20 dark:text-cyan-300 dark:hover:bg-primary/30',
+    outline:   'border border-bordersoft bg-white text-textmain hover:border-primary hover:text-primary dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 dark:hover:border-white/30 dark:hover:text-white',
+    ghost:     'text-textmuted hover:text-primary hover:bg-primary-soft dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/10',
+    danger:    'bg-danger text-white hover:bg-red-600'
   };
   const sizes = {
     sm: 'px-3 py-1.5 text-sm',

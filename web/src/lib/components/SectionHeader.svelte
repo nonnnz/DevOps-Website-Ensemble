@@ -9,9 +9,9 @@
   {#if eyebrow}
     <span class="eyebrow mb-3">{eyebrow}</span>
   {/if}
-  <h2 class="text-3xl font-bold text-textmain sm:text-4xl text-balance">{title}</h2>
+  <h2 class="text-3xl font-bold text-textmain dark:text-white sm:text-4xl text-balance">{title}</h2>
   {#if subtitle}
-    <p class="mt-3 text-base leading-relaxed text-textmuted">{subtitle}</p>
+    <p class="mt-3 text-base leading-relaxed text-textmuted dark:text-slate-400">{subtitle}</p>
   {/if}
   <slot />
 </div>

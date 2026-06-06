@@ -3,8 +3,8 @@
  * Edit these once and they update across the whole site.
  */
 export const site = {
-  name: 'Super AI Engineer LLM',
-  tagline: 'Super AI Engineer LLM',
+  name: 'Aksorn-LM',
+  tagline: 'Aksorn-LM',
   description:
     'A Thai-first large language model platform for engineering workflows, evaluation, research, and real-world applications.',
   // Update these to your real project links.

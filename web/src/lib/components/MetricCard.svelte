@@ -17,17 +17,17 @@
 </script>
 
 <div class="card-soft card-hover p-5">
-  <p class="text-sm font-medium text-textmuted">{label}</p>
+  <p class="text-sm font-medium text-textmuted dark:text-slate-400">{label}</p>
   <div class="mt-1 flex items-baseline gap-1">
-    <span class="text-3xl font-bold text-textmain">{value}</span>
-    {#if unit}<span class="text-sm font-medium text-textmuted">{unit}</span>{/if}
+    <span class="text-3xl font-bold text-textmain dark:text-white">{value}</span>
+    {#if unit}<span class="text-sm font-medium text-textmuted dark:text-slate-400">{unit}</span>{/if}
   </div>
   {#if progress != null}
-    <div class="mt-3 h-2 w-full overflow-hidden rounded-full bg-primary-soft">
+    <div class="mt-3 h-2 w-full overflow-hidden rounded-full bg-primary-soft dark:bg-primary/20">
       <div class="h-full rounded-full {bar[tone] || bar.primary}" style="width: {Math.min(100, Math.max(0, progress))}%"></div>
     </div>
   {/if}
   {#if sublabel}
-    <p class="mt-2 text-xs text-textmuted">{sublabel}</p>
+    <p class="mt-2 text-xs text-textmuted dark:text-slate-400">{sublabel}</p>
   {/if}
 </div>
